@@ -13,7 +13,7 @@
 /* ============================================================
    THE ASIC NETWORK - instrument-panel theme
    Edit the CONFIG block near the top of <script> (GitHub URL,
-   Discord invite, taglines). Look for "EDIT" comments.
+   Discord invite, Web3Forms key, taglines). Look for "EDIT" comments.
    ============================================================ */
 :root{
   --void:#060807;
@@ -118,6 +118,8 @@ h1.title .g{color:var(--p)}
 .btn:hover{background:var(--p);color:#03150c;text-shadow:none;box-shadow:0 0 20px rgba(45,255,160,.5)}
 .btn:hover svg{filter:none}
 .btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.55;cursor:wait}
+.btn:disabled:hover{background:rgba(45,255,160,.04);color:var(--p);box-shadow:none}
 .btn.ghost{color:var(--ink);border-color:var(--edge2)}
 .btn.ghost:hover{color:var(--p);border-color:var(--p);background:rgba(45,255,160,.06);box-shadow:none}
 
@@ -180,6 +182,8 @@ h2{font-family:var(--font-screen);font-weight:400;font-size:clamp(1.9rem,5vw,3re
 .field.err .msg{display:block}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 #reg-form button{width:100%;justify-content:center;margin-top:6px}
+.send-err{display:none;font-size:.66rem;color:var(--red);letter-spacing:1px;margin:2px 0 10px;position:relative;z-index:3;line-height:1.4}
+.send-err.show{display:block}
 
 .reg-out{display:none;position:relative;z-index:3}
 .reg-out .ok{font-family:var(--font-screen);font-size:1.7rem;color:var(--p);text-shadow:var(--glow);display:flex;align-items:center;gap:10px;margin-bottom:16px}
@@ -330,6 +334,8 @@ h2{font-family:var(--font-screen);font-weight:400;font-size:clamp(1.9rem,5vw,3re
         <div class="graticule"></div>
         <div class="prompt">NEW NODE // CLUB REGISTRATION</div>
         <form id="reg-form" novalidate>
+          <!-- honeypot: hidden from people, traps bots (Web3Forms convention) -->
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
           <div class="field">
             <label for="reg-uni">UNIVERSITY <span class="req">*</span></label>
             <input id="reg-uni" type="text" autocomplete="organization" placeholder="e.g. State University">
@@ -356,11 +362,12 @@ h2{font-family:var(--font-screen);font-weight:400;font-size:clamp(1.9rem,5vw,3re
               <input id="reg-country" type="text" placeholder="For Discord Invite">
             </div>
           </div>
+          <div class="send-err" id="reg-error" role="alert"></div>
           <button class="btn brk" type="submit">GENERATE REGISTRATION</button>
         </form>
 
         <div class="reg-out" id="reg-out" aria-live="polite">
-          <div class="ok">REGISTRATION GENERATED</div>
+          <div class="ok">REGISTRATION SENT</div>
           <div class="badge-card">
             <div class="club" id="out-club"></div>
             <div class="uni" id="out-uni"></div>
@@ -376,7 +383,7 @@ h2{font-family:var(--font-screen);font-weight:400;font-size:clamp(1.9rem,5vw,3re
             <button class="btn ghost" id="out-copy" type="button">COPY DETAILS</button>
             <button class="btn ghost" id="out-again" type="button">REGISTER ANOTHER</button>
           </div>
-          <p class="note">Your details stay in your browser. Joining the Discord is what plugs your club into the network, that is where new clubs are tracked and onboarded.</p>
+          <p class="note">Your registration is sent straight to the network organizers. Joining the Discord is what plugs your club into the network, that is where new clubs are tracked and onboarded.</p>
         </div>
       </div>
 
@@ -384,7 +391,7 @@ h2{font-family:var(--font-screen);font-weight:400;font-size:clamp(1.9rem,5vw,3re
         <h3>HOW IT WORKS</h3>
         <ol class="steps">
           <li>Fill in your <b>university</b>, <b>club</b>, and a contact.</li>
-          <li>Get a generated <b>node ID</b> and confirmation.</li>
+          <li>We get your registration and a generated <b>node ID</b>.</li>
           <li>Hit <b>Join the Discord</b> to plug in.</li>
           <li>Start sharing <b>docs</b> and <b>biweekly updates</b> with the network.</li>
         </ol>
@@ -417,6 +424,13 @@ const CONFIG = {
   shortName: "ASIC-NET",
   github:   "https://github.com/ASIC-Network",
   discord:  "https://discord.gg/REPLACE-ME",   // EDIT: paste your real Discord invite link
+
+  // EDIT: free access key from https://web3forms.com - enter raghu119@umn.edu and they
+  // email you a key. Paste it below and every registration gets emailed to that address.
+  // The key is safe to expose in client code (it is an alias to your email, not a secret).
+  // Leave the REPLACE text in place to preview the page without sending anything.
+  web3formsKey: "REPLACE-WITH-WEB3FORMS-ACCESS-KEY",
+
   taglines: [
     "A network of university ASIC & VLSI clubs.",
     "Shared docs. Biweekly updates. Built in the open.",
@@ -556,15 +570,38 @@ function fit(canvas){
   })();
 })();
 
-// registration form
+// registration form -> emails the network owner via Web3Forms (no backend)
 (function(){
   const form = document.getElementById("reg-form"), out = document.getElementById("reg-out");
   if (!form || !out) return;
   const $ = id => document.getElementById(id);
+  const errLine = $("reg-error");
+  const btn = form.querySelector('button[type="submit"]');
   function hash(str){ let h=5381; for(let i=0;i<str.length;i++) h=((h<<5)+h+str.charCodeAt(i))>>>0; return h.toString(36).toUpperCase(); }
+  function showErr(t){ if(errLine){ errLine.textContent = t; errLine.classList.add("show"); } }
+  function clearErr(){ if(errLine){ errLine.textContent = ""; errLine.classList.remove("show"); } }
 
-  form.addEventListener("submit", e=>{
+  function showSuccess(club, uni, country, name, email, id, date){
+    $("out-club").textContent   = club;
+    $("out-uni").textContent    = uni + (country ? " / " + country : "");
+    $("out-contact").textContent= name + (email ? "  <" + email + ">" : "");
+    $("out-id").textContent     = id;
+    $("out-date").textContent   = date;
+    out.dataset.copy =
+      "ASIC Network - club registration\n" +
+      "Club: " + club + "\nUniversity: " + uni +
+      (country ? "\nCountry: " + country : "") +
+      "\nContact: " + name + (email ? " <" + email + ">" : "") +
+      "\nNode ID: " + id + "\nRegistered: " + date;
+    form.style.display = "none";
+    out.style.display  = "block";
+    out.scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "nearest" });
+  }
+
+  form.addEventListener("submit", async e=>{
     e.preventDefault();
+    clearErr();
+
     let ok = true;
     [["reg-uni"],["reg-club"],["reg-name"]].forEach(([id])=>{
       const el = $(id), wrap = el.closest(".field");
@@ -579,22 +616,62 @@ function fit(canvas){
     const id = "ASN-" + hash(uni+"|"+club+"|"+name).slice(0,6).padStart(6,"0");
     const date = new Date().toISOString().slice(0,10);
 
-    $("out-club").textContent = club;
-    $("out-uni").textContent = uni + (country ? " / " + country : "");
-    $("out-contact").textContent = name + (email ? "  <" + email + ">" : "");
-    $("out-id").textContent = id;
-    $("out-date").textContent = date;
+    const haveKey = CONFIG.web3formsKey && !/REPLACE/i.test(CONFIG.web3formsKey);
 
-    out.dataset.copy =
-      "ASIC Network - club registration\n" +
-      "Club: " + club + "\nUniversity: " + uni +
-      (country ? "\nCountry: " + country : "") +
-      "\nContact: " + name + (email ? " <" + email + ">" : "") +
-      "\nNode ID: " + id + "\nRegistered: " + date;
+    // No key configured -> just preview locally so the page still works.
+    if (!haveKey){ showSuccess(club, uni, country, name, email, id, date); return; }
 
-    form.style.display = "none";
-    out.style.display = "block";
-    out.scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "nearest" });
+    const payload = {
+      access_key: CONFIG.web3formsKey,
+      subject: "ASIC-Net // new club: " + club + " @ " + uni,
+      from_name: "ASIC-Net Registration",
+      botcheck: form.botcheck ? form.botcheck.checked : false,
+      University: uni,
+      Club: club,
+      Contact: name,
+      Country: country || "(not provided)",
+      "Node ID": id,
+      Registered: date
+    };
+    if (email) payload.email = email;       // lowercase "email" sets the reply-to address
+    else payload.Email = "(not provided)";
+
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = "TRANSMITTING...";
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(()=>({ success:false }));
+      if (!res.ok || !data.success) throw new Error((data && data.message) || "submission failed");
+    } catch (err){
+      btn.disabled = false; btn.textContent = label;
+      showErr("Could not send (" + (err.message || "network error") + "). Check your connection and try again.");
+      return;
+    }
+    btn.disabled = false; btn.textContent = label;
+    showSuccess(club, uni, country, name, email, id, date);
+
+    /* ----------------------------------------------------------------
+       ALTERNATIVE: FormSubmit (no signup at all, but your email address
+       is visible in the page source). Swap the fetch above for this and
+       you can ignore the Web3Forms key entirely:
+
+       const res = await fetch("https://formsubmit.co/ajax/raghu119@umn.edu", {
+         method: "POST",
+         headers: { "Content-Type": "application/json", "Accept": "application/json" },
+         body: JSON.stringify({
+           _subject: "ASIC-Net new club: " + club,
+           University: uni, Club: club, Contact: name,
+           Email: email, Country: country, "Node ID": id, Registered: date
+         })
+       });
+       const data = await res.json();   // FormSubmit returns { success: "true" }
+       // The very first submission triggers a one-time confirmation email
+       // you have to click before anything else comes through.
+       ---------------------------------------------------------------- */
   });
 
   $("out-copy").addEventListener("click", async ()=>{
@@ -607,6 +684,7 @@ function fit(canvas){
   $("out-again").addEventListener("click", ()=>{
     form.reset();
     form.querySelectorAll(".field.err").forEach(f=>f.classList.remove("err"));
+    clearErr();
     out.style.display = "none";
     form.style.display = "block";
     form.scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "nearest" });
