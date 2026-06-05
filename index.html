@@ -4,712 +4,297 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The ASIC Network // University ASIC &amp; VLSI Clubs</title>
-<meta name="description" content="The ASIC Network is a collective of university ASIC and VLSI clubs working in the open. Shared documentation, biweekly updates, and a community. Register your club to get a node and a Discord invite.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060807'/%3E%3Cpath d='M2 16 Q7 3 12 16 T22 16 L30 16' fill='none' stroke='%232dffa0' stroke-width='2'/%3E%3C/svg%3E">
+<meta name="description" content="The ASIC Network is a collective of university ASIC and VLSI clubs working in the open. Shared documentation, biweekly updates, and a community. Register your club to join.">
+<link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   THE ASIC NETWORK - instrument-panel theme
-   Edit the CONFIG block near the top of <script> (GitHub URL,
-   Discord invite, Web3Forms key, taglines). Look for "EDIT" comments.
+   THE ASIC NETWORK — minimal blueprint theme
+   Edit CONFIG in <script> for GitHub / Discord links + taglines.
+   Images expected in repo root: banner.png, logo.png
    ============================================================ */
 :root{
-  --void:#060807;
-  --void2:#080b0a;
-  --panel:#0d1211;
-  --panel2:#111715;
-  --edge:#1d2723;
-  --edge2:#2a3631;
-  --screen:#03150c;
-  --p:#2dffa0;            /* phosphor green */
-  --p-hot:#d8ffee;        /* hot core */
-  --p-dim:#1f8a5e;        /* dim phosphor */
-  --amber:#ffb02e;
-  --cyan:#37e6ff;
-  --red:#ff3b5c;
-  --label:#5f7d72;        /* silkscreen label */
-  --ink:#9bffd0;          /* default screen text */
-  --grid:rgba(45,255,160,.07);
-  --grid2:rgba(45,255,160,.16);
-  --glow:0 0 6px rgba(45,255,160,.55), 0 0 18px rgba(45,255,160,.25);
-  --font-screen:'VT323', monospace;
-  --font-ui:'Share Tech Mono', ui-monospace, monospace;
+  --navy:#03418a;          /* sampled from banner */
+  --navy-2:#022f64;        /* hover / pressed */
+  --ink:#0a1f3d;           /* headings */
+  --blue:#1c5fc0;          /* bright accent */
+  --soft:#eaf0fb;          /* soft blue tint */
+  --trace:#c2d4f0;         /* light circuit trace */
+  --bg:#ffffff;
+  --bg-alt:#f6f8fc;
+  --text:#2c3a52;          /* body */
+  --muted:#65728c;
+  --line:#e3e9f3;
+  --grid:rgba(3,65,138,.05);
+  --font:'Archivo', system-ui, sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --maxw:1080px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--font-ui);background:var(--void);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:
-    radial-gradient(140% 120% at 50% -10%, rgba(45,255,160,.05), transparent 45%),
-    radial-gradient(120% 120% at 50% 120%, rgba(45,255,160,.04), transparent 50%),
-    radial-gradient(120% 100% at 50% 50%, var(--void2), var(--void) 70%)}
-body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(120% 110% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%)}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
 
-/* CRT overlay */
-.crt{position:fixed;inset:0;z-index:60;pointer-events:none}
-.crt::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);mix-blend-mode:multiply;opacity:.45}
-.crt::after{content:"";position:absolute;left:0;right:0;height:140px;top:-140px;background:linear-gradient(180deg, transparent, rgba(45,255,160,.06), transparent);animation:beam 7s linear infinite}
-@keyframes beam{to{transform:translateY(calc(100vh + 280px))}}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4vw,32px)}
 
-/* chassis */
-.device{max-width:1140px;margin:0 auto;position:relative;padding:0 clamp(10px,3vw,26px) clamp(36px,6vw,72px)}
-.bezel{position:relative;border-radius:16px;margin-top:18px;
-  background:linear-gradient(180deg, var(--panel2), var(--panel)), repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px);
-  border:1px solid var(--edge);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.045), inset 0 0 0 1px rgba(0,0,0,.45), 0 30px 80px rgba(0,0,0,.6);
-  padding:clamp(14px,2.5vw,26px)}
-.screw{position:absolute;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 34% 30%, #333d38, #0a0d0c 72%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.55), 0 1px 1px rgba(255,255,255,.05)}
-.screw::after{content:"";position:absolute;inset:0;margin:auto;width:7px;height:1.5px;background:rgba(0,0,0,.55);transform:rotate(40deg);border-radius:2px}
-.screw.tl{top:10px;left:10px}.screw.tr{top:10px;right:10px}.screw.bl{bottom:10px;left:10px}.screw.br{bottom:10px;right:10px}
+/* mono label helper */
+.kicker{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--navy)}
 
-/* top bar */
-.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px clamp(8px,2vw,16px);margin:-4px -4px 18px;
-  background:linear-gradient(180deg, rgba(13,18,17,.96), rgba(13,18,17,.82));backdrop-filter:blur(6px);border:1px solid var(--edge);border-radius:10px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 8px 24px rgba(0,0,0,.4)}
-.brand{display:flex;align-items:center;gap:10px;margin-right:auto}
-.brand svg{display:block;filter:drop-shadow(var(--glow))}
-.brand .nm{font-family:var(--font-screen);font-size:1.7rem;line-height:1;color:var(--p);text-shadow:var(--glow);letter-spacing:1px}
-.brand .mdl{font-size:.62rem;color:var(--label);letter-spacing:2px}
-.nav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
-.nav a{color:var(--ink);text-decoration:none;font-size:.74rem;letter-spacing:1.5px;padding:6px 9px;border:1px solid transparent;border-radius:6px;opacity:.8;transition:.18s;display:inline-flex;align-items:center;gap:6px}
-.nav a:hover{opacity:1;color:var(--p);border-color:rgba(45,255,160,.35);text-shadow:var(--glow);background:rgba(45,255,160,.05)}
-.nav a svg{opacity:.85}
-.status{display:flex;align-items:center;gap:14px;font-size:.66rem;letter-spacing:1px;color:var(--label)}
-.led{display:inline-flex;align-items:center;gap:6px}
-.led b{width:8px;height:8px;border-radius:50%;background:var(--p);box-shadow:0 0 8px var(--p);animation:pulse 2.4s ease-in-out infinite}
-.led.amber b{background:var(--amber);box-shadow:0 0 8px var(--amber)}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.82)}}
-#clock{font-family:var(--font-screen);font-size:1.05rem;color:var(--p);text-shadow:var(--glow);letter-spacing:1px}
+/* ---------- top nav ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .row{display:flex;align-items:center;gap:18px;height:64px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
+.brand img{width:34px;height:34px}
+.brand .wm{font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--ink);line-height:1}
+.brand .sub{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.links{display:flex;align-items:center;gap:4px}
+.links a{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text);text-decoration:none;padding:8px 11px;border-radius:7px;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.links a:hover{color:var(--navy);background:var(--soft)}
+.links a.gh svg{opacity:.8}
 
-/* screen module */
-.screen{position:relative;overflow:hidden;border-radius:12px;
-  background:radial-gradient(120% 120% at 50% 0%, rgba(45,255,160,.06), transparent 55%), linear-gradient(180deg, #04190e, var(--screen) 45%, #02100a);
-  border:1px solid #0a2c1f;box-shadow:inset 0 0 70px rgba(0,0,0,.72), inset 0 0 2px rgba(45,255,160,.4), 0 0 0 1px rgba(0,0,0,.5)}
-.screen::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(80% 40% at 50% -8%, rgba(255,255,255,.06), transparent 60%)}
-.graticule{position:absolute;inset:0;pointer-events:none;z-index:2;
-  background-image:repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 26px),repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 26px),repeating-linear-gradient(0deg, var(--grid2) 0 1px, transparent 1px 130px),repeating-linear-gradient(90deg, var(--grid2) 0 1px, transparent 1px 130px);
-  background-position:center center;-webkit-mask:radial-gradient(125% 125% at 50% 50%, #000 58%, transparent 100%);mask:radial-gradient(125% 125% at 50% 50%, #000 58%, transparent 100%)}
+/* ---------- buttons ---------- */
+.btn{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;border-radius:9px;padding:13px 22px;display:inline-flex;align-items:center;gap:9px;transition:.16s;border:1px solid transparent;white-space:nowrap}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:var(--navy-2);border-color:var(--navy-2);transform:translateY(-1px);box-shadow:0 8px 20px rgba(3,65,138,.22)}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--navy);background:var(--soft)}
+.btn:active{transform:translateY(0)}
 
-/* hero */
-.hero{padding:clamp(20px,3vw,30px);min-height:clamp(420px,60vh,540px);display:flex;flex-direction:column}
-#wave{position:absolute;inset:0;z-index:1;width:100%;height:100%}
-.hero-readouts{position:absolute;inset:0;z-index:3;pointer-events:none;display:flex;justify-content:space-between;padding:14px 16px;font-size:.66rem;letter-spacing:1px;color:var(--p-dim)}
-.hero-readouts .col{display:flex;flex-direction:column;gap:5px}
-.hero-readouts .col.r{align-items:flex-end;text-align:right}
-.ro b{color:var(--p);text-shadow:var(--glow)}
-.rec{display:inline-flex;align-items:center;gap:6px;color:var(--red)}
-.rec i{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);animation:pulse 1.3s infinite;font-style:normal}
-.hero-core{position:relative;z-index:4;margin:auto 0;max-width:780px}
-.hero-core::before{content:"";position:absolute;inset:-30px -40px;z-index:-1;background:radial-gradient(60% 70% at 30% 50%, rgba(2,16,9,.86), rgba(2,16,9,.45) 55%, transparent 80%)}
-.eyebrow{font-size:.72rem;letter-spacing:4px;color:var(--label);margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.eyebrow::before{content:"";width:26px;height:1px;background:var(--p);box-shadow:var(--glow)}
-h1.title{font-family:var(--font-screen);font-weight:400;font-size:clamp(2.8rem,9vw,6.4rem);line-height:.92;color:var(--p-hot);text-shadow:0 0 8px rgba(45,255,160,.6), 0 0 30px rgba(45,255,160,.35);letter-spacing:2px}
-h1.title .g{color:var(--p)}
-.tagline{font-family:var(--font-screen);font-size:clamp(1.2rem,3.2vw,1.7rem);color:var(--ink);margin-top:14px;min-height:1.3em}
-.cursor{display:inline-block;width:.5em;height:1em;background:var(--p);box-shadow:var(--glow);vertical-align:-2px;margin-left:2px;animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-.cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+/* ---------- hero ---------- */
+.hero{position:relative;text-align:center;padding:clamp(54px,8vw,96px) 0 clamp(34px,5vw,52px)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px;
+  -webkit-mask:radial-gradient(120% 90% at 50% 0%,#000 35%,transparent 78%);
+  mask:radial-gradient(120% 90% at 50% 0%,#000 35%,transparent 78%)}
+.hero .kicker{display:inline-flex;align-items:center;gap:10px;justify-content:center}
+.hero .kicker::before,.hero .kicker::after{content:"";width:24px;height:1px;background:var(--trace)}
+h1{font-weight:800;font-size:clamp(2.5rem,7vw,4.6rem);line-height:1.02;letter-spacing:-.02em;color:var(--ink);margin:16px 0 0}
+h1 .g{color:var(--navy)}
+.hero p.lead{max-width:580px;margin:18px auto 0;font-size:clamp(1.02rem,2.2vw,1.18rem);color:var(--muted)}
+.cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-top:30px}
 
-.btn{font-family:var(--font-ui);font-size:.8rem;letter-spacing:2px;color:var(--p);text-decoration:none;cursor:pointer;padding:11px 18px;border:1px solid var(--p);border-radius:7px;background:rgba(45,255,160,.04);position:relative;transition:.16s;display:inline-flex;align-items:center;gap:8px}
-.btn.brk::before{content:"[";opacity:.55}.btn.brk::after{content:"]";opacity:.55}
-.btn:hover{background:var(--p);color:#03150c;text-shadow:none;box-shadow:0 0 20px rgba(45,255,160,.5)}
-.btn:hover svg{filter:none}
-.btn:active{transform:translateY(1px)}
-.btn:disabled{opacity:.55;cursor:wait}
-.btn:disabled:hover{background:rgba(45,255,160,.04);color:var(--p);box-shadow:none}
-.btn.ghost{color:var(--ink);border-color:var(--edge2)}
-.btn.ghost:hover{color:var(--p);border-color:var(--p);background:rgba(45,255,160,.06);box-shadow:none}
+/* banner image showcase */
+.banner{margin:clamp(36px,6vw,60px) auto 0;max-width:var(--maxw)}
+.banner figure{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 26px 60px -28px rgba(3,65,138,.4)}
+.banner img{width:100%;aspect-ratio:2172/724;object-fit:cover}
+.banner figcaption{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);background:rgba(255,255,255,.82);padding:5px 9px;border-radius:6px;backdrop-filter:blur(4px)}
 
-/* sections */
-section{scroll-margin-top:86px}
-.module{margin-top:clamp(34px,6vw,64px)}
-.marker{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.marker .idx{font-family:var(--font-screen);font-size:1.2rem;color:var(--p);text-shadow:var(--glow);border:1px solid rgba(45,255,160,.4);border-radius:5px;padding:0 8px;line-height:1.5}
-.marker .txt{font-size:.78rem;letter-spacing:4px;color:var(--label)}
-.marker .ln{flex:1;height:1px;background:linear-gradient(90deg, rgba(45,255,160,.35), transparent)}
-.marker .dot{width:7px;height:7px;border-radius:50%;background:var(--p);box-shadow:var(--glow)}
-h2{font-family:var(--font-screen);font-weight:400;font-size:clamp(1.9rem,5vw,3rem);line-height:1;color:var(--p-hot);text-shadow:var(--glow);letter-spacing:1px;margin-bottom:10px}
-.lede{max-width:780px;color:var(--ink);opacity:.92;font-size:clamp(.92rem,2vw,1.02rem)}
-.lede b{color:var(--p);text-shadow:var(--glow)}
-.lede+.lede{margin-top:12px}
+/* ---------- section scaffolding ---------- */
+section{scroll-margin-top:84px}
+.module{padding:clamp(48px,8vw,88px) 0}
+.module.alt{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.marker{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+.marker .num{font-family:var(--mono);font-size:.78rem;font-weight:600;color:#fff;background:var(--navy);border-radius:6px;padding:2px 8px;letter-spacing:.05em}
+.marker .txt{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.marker .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.05;letter-spacing:-.015em;color:var(--ink);margin-bottom:14px}
+.lede{max-width:680px;font-size:clamp(1rem,2vw,1.1rem);color:var(--text)}
+.lede b{color:var(--navy);font-weight:600}
+.lede+.lede{margin-top:14px;color:var(--muted)}
 
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
 .reveal.in{opacity:1;transform:none}
 
-/* cards */
-.grid{display:grid;gap:14px;margin-top:24px}
-.grid.c4{grid-template-columns:repeat(4,1fr)}
-.grid.c2{grid-template-columns:repeat(2,1fr)}
-.card{position:relative;border:1px solid var(--edge);border-radius:11px;padding:18px;background:linear-gradient(180deg, rgba(20,28,25,.6), rgba(11,16,15,.6));box-shadow:inset 0 1px 0 rgba(255,255,255,.03);transition:.18s;overflow:hidden}
-.card:hover{border-color:rgba(45,255,160,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.03), 0 0 26px rgba(45,255,160,.08)}
-.card .top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.card .top .n{font-family:var(--font-screen);font-size:1rem;color:var(--p-dim)}
-.card .top .mini-led{width:7px;height:7px;border-radius:50%;background:var(--p);box-shadow:0 0 7px var(--p);margin-left:auto}
-.card h3{font-size:.86rem;letter-spacing:2px;color:var(--p);text-shadow:var(--glow);margin-bottom:9px}
-.card p{font-size:.85rem;color:var(--ink);opacity:.85}
+/* ---------- cards ---------- */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px}
+.card{position:relative;background:#fff;border:1px solid var(--line);border-radius:13px;padding:22px 20px;transition:.18s;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--navy);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.card:hover{transform:translateY(-3px);border-color:#cdd9ef;box-shadow:0 18px 40px -26px rgba(3,65,138,.45)}
+.card:hover::before{transform:scaleX(1)}
+.card .n{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--navy);letter-spacing:.1em}
+.card h3{font-size:.96rem;font-weight:700;letter-spacing:.01em;color:var(--ink);margin:12px 0 8px}
+.card p{font-size:.9rem;color:var(--muted)}
 
-/* network (decorative) */
-.net-screen{min-height:300px;position:relative;margin-top:24px}
-#netmap{position:absolute;inset:0;z-index:1;width:100%;height:100%}
-.net-hud{position:absolute;z-index:3;pointer-events:none;font-size:.62rem;letter-spacing:1px;color:var(--p-dim)}
-.net-hud.tl{top:12px;left:14px}.net-hud.tr{top:12px;right:14px;text-align:right}.net-hud.bl{bottom:12px;left:14px}
-.net-hud b{color:var(--p);text-shadow:var(--glow)}
+/* ---------- join / register ---------- */
+.join-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:22px;margin-top:34px;align-items:start}
+.form-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -34px rgba(3,65,138,.4)}
+.form-card .bar{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--soft)}
+.form-card .bar .dot{width:8px;height:8px;border-radius:50%;background:var(--navy);box-shadow:0 0 0 3px rgba(3,65,138,.14)}
+.form-card .bar span{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
+.form-card iframe{width:100%;height:1180px;border:0;display:block;background:#fff}
 
-/* side panel (how it works) */
-.side{border:1px solid var(--edge);border-radius:12px;padding:18px;background:linear-gradient(180deg, rgba(20,28,25,.5), rgba(11,16,15,.55));display:flex;flex-direction:column}
-.side h3{font-size:.74rem;letter-spacing:3px;color:var(--label);margin-bottom:16px}
-.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:13px;flex:1}
-.steps li{counter-increment:s;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;font-size:.84rem;color:var(--ink);opacity:.9}
-.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--font-screen);font-size:1.1rem;color:var(--p);text-shadow:var(--glow);border:1px solid rgba(45,255,160,.4);border-radius:5px;padding:0 7px;line-height:1.5}
-.steps b{color:var(--p);text-shadow:var(--glow)}
+.side{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px 22px}
+.side h3{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:16px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:start;font-size:.92rem;color:var(--text)}
+.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--navy);border:1px solid var(--trace);border-radius:6px;padding:3px 8px;line-height:1}
+.steps b{color:var(--ink);font-weight:600}
+.side .btn{width:100%;justify-content:center;margin-top:22px}
+.side .note{font-size:.78rem;color:var(--muted);margin-top:16px;line-height:1.55}
 
-/* register */
-.reg-wrap{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;margin-top:24px;align-items:stretch}
-.form-screen{padding:clamp(18px,2.4vw,26px)}
-.prompt{font-size:.66rem;letter-spacing:2px;color:var(--p-dim);margin-bottom:18px;display:flex;align-items:center;gap:8px;position:relative;z-index:3}
-.prompt::before{content:">";color:var(--p);text-shadow:var(--glow)}
-.field{margin-bottom:14px;position:relative;z-index:3}
-.field label{display:block;font-size:.66rem;letter-spacing:2px;color:var(--label);margin-bottom:6px}
-.field label .req{color:var(--p)}
-.field input{width:100%;font-family:var(--font-ui);font-size:.95rem;color:var(--ink);background:rgba(2,16,9,.65);border:1px solid var(--edge2);border-radius:7px;padding:11px 12px;letter-spacing:.5px;outline:none;transition:.16s}
-.field input::placeholder{color:rgba(95,125,114,.6)}
-.field input:focus{border-color:var(--p);box-shadow:0 0 0 1px rgba(45,255,160,.4), 0 0 16px rgba(45,255,160,.12);color:var(--p-hot)}
-.field.err input{border-color:var(--red);box-shadow:0 0 0 1px rgba(255,59,92,.4)}
-.field .msg{font-size:.6rem;color:var(--red);margin-top:5px;display:none;letter-spacing:1px}
-.field.err .msg{display:block}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-#reg-form button{width:100%;justify-content:center;margin-top:6px}
-.send-err{display:none;font-size:.66rem;color:var(--red);letter-spacing:1px;margin:2px 0 10px;position:relative;z-index:3;line-height:1.4}
-.send-err.show{display:block}
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:28px 0;background:var(--bg-alt)}
+footer .row{display:flex;align-items:center;gap:14px 26px;flex-wrap:wrap;justify-content:space-between}
+footer .l{display:flex;align-items:center;gap:10px}
+footer .l img{width:26px;height:26px}
+footer .wm{font-weight:800;color:var(--ink);letter-spacing:.03em}
+footer .tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+footer a{color:var(--text);text-decoration:none;font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px}
+footer a:hover{color:var(--navy)}
+footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--muted);width:100%;border-top:1px solid var(--line);padding-top:16px;margin-top:4px}
 
-.reg-out{display:none;position:relative;z-index:3}
-.reg-out .ok{font-family:var(--font-screen);font-size:1.7rem;color:var(--p);text-shadow:var(--glow);display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.reg-out .ok::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--p);box-shadow:0 0 12px var(--p)}
-.badge-card{border:1px solid rgba(45,255,160,.3);border-radius:10px;padding:16px;background:rgba(2,16,9,.55);margin-bottom:16px}
-.badge-card .club{font-family:var(--font-screen);font-size:clamp(1.5rem,4vw,2rem);color:var(--p-hot);text-shadow:var(--glow);line-height:1;word-break:break-word}
-.badge-card .uni{color:var(--ink);opacity:.85;font-size:.85rem;margin-top:5px}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;margin-top:14px;font-size:.78rem;border-top:1px solid rgba(45,255,160,.12);padding-top:12px}
-.kv .k{color:var(--label);letter-spacing:1px}
-.kv .v{color:var(--p);word-break:break-word}
-.reg-out .dc{width:100%;justify-content:center;font-size:.86rem;padding:13px}
-.out-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.out-actions .btn{flex:1;justify-content:center;font-size:.7rem;padding:9px}
-.note{font-size:.64rem;color:var(--label);margin-top:14px;letter-spacing:.5px;line-height:1.5}
-
-/* footer */
-.foot{margin-top:30px;border-top:1px solid var(--edge);padding-top:16px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between;font-size:.7rem;letter-spacing:1px;color:var(--label)}
-.foot .l{display:flex;align-items:center;gap:8px}
-.foot .nm{font-family:var(--font-screen);font-size:1.15rem;color:var(--p);text-shadow:var(--glow)}
-.foot a{color:var(--ink);text-decoration:none;opacity:.8;display:inline-flex;align-items:center;gap:6px}
-.foot a:hover{color:var(--p);opacity:1;text-shadow:var(--glow)}
-.foot .eof b{color:var(--p)}
-
-/* boot */
-#boot{position:fixed;inset:0;z-index:10000;background:#03100a;display:none;align-items:flex-start;justify-content:flex-start;padding:8vh 7vw;font-family:var(--font-screen);font-size:clamp(1.1rem,3vw,1.5rem);color:var(--p);text-shadow:var(--glow);white-space:pre;line-height:1.5;transition:opacity .5s ease}
-#boot.run{display:block}
-#boot.done{opacity:0;pointer-events:none}
-
-/* responsive */
+/* ---------- responsive ---------- */
 @media(max-width:880px){
-  .grid.c4{grid-template-columns:repeat(2,1fr)}
-  .reg-wrap{grid-template-columns:1fr}
-  .net-screen{min-height:280px}
-  .topbar{gap:8px}
-  .status{width:100%;justify-content:flex-start;order:3;border-top:1px solid var(--edge);padding-top:8px;margin-top:2px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .join-grid{grid-template-columns:1fr}
+  .form-card iframe{height:1320px}
 }
-@media(max-width:520px){
-  .grid.c4,.grid.c2{grid-template-columns:1fr}
-  .field-row{grid-template-columns:1fr}
-  .nav{order:2;width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
-  .nav a{flex:none}
-  .hero-readouts{font-size:.56rem}
+@media(max-width:600px){
+  .links a:not(.gh){display:none}
+  .grid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation:none !important;transition:none !important}
+  *,*::before,*::after{animation:none!important;transition:none!important}
   .reveal{opacity:1;transform:none}
 }
 </style>
 </head>
 <body>
 
-<div id="boot" aria-hidden="true"></div>
-<div class="crt" aria-hidden="true"></div>
-
-<div class="device">
-<div class="bezel">
-  <span class="screw tl"></span><span class="screw tr"></span><span class="screw bl"></span><span class="screw br"></span>
-
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="brand">
-      <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
-        <rect x="1" y="1" width="32" height="32" rx="6" stroke="#2dffa0" stroke-opacity=".4"/>
-        <path d="M3 17 Q8 4 13 17 T23 17 L31 17" stroke="#2dffa0" stroke-width="2" fill="none"/>
-      </svg>
-      <div><div class="nm">ASIC-NET</div><div class="mdl">OPEN SILICON NETWORK</div></div>
-    </div>
-    <nav class="nav" aria-label="Primary">
-      <a href="#about">ABOUT</a>
-      <a href="#work">WHAT WE DO</a>
-      <a href="#network">NETWORK</a>
-      <a href="#join">JOIN</a>
-      <a data-link="github" href="#" target="_blank" rel="noopener">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GITHUB
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap row">
+    <a class="brand" href="#top">
+      <img src="logo.png" alt="ASIC Network logo">
+      <span><span class="wm">ASIC NETWORK</span><br><span class="sub">Open Silicon Network</span></span>
+    </a>
+    <nav class="links" aria-label="Primary">
+      <a href="#about">About</a>
+      <a href="#work">What we do</a>
+      <a href="#join">Join</a>
+      <a class="gh" data-link="github" href="#" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub
       </a>
     </nav>
-    <div class="status">
-      <span class="led"><b></b>PWR</span>
-      <span class="led amber"><b></b>LINK</span>
-      <span id="clock">--:--:--</span>
-    </div>
-  </header>
+  </div>
+</header>
+
+<main id="top">
 
   <!-- HERO -->
-  <section class="screen hero" aria-label="Intro">
-    <canvas id="wave" aria-hidden="true"></canvas>
-    <div class="graticule"></div>
-    <div class="hero-readouts" aria-hidden="true">
-      <div class="col"><span class="ro">CH1 <b>DOCS</b></span><span class="ro">CH2 <b>UPDATES</b></span><span class="ro">1.00 V/DIV</span></div>
-      <div class="col r"><span class="rec"><i></i>LIVE</span><span class="ro">SYNC 2 WK/DIV</span><span class="ro">OPEN SOURCE</span></div>
-    </div>
-    <div class="hero-core">
-      <p class="eyebrow">UNIVERSITY ASIC &amp; VLSI CLUBS</p>
-      <h1 class="title">THE <span class="g">ASIC</span><br>NETWORK</h1>
-      <p class="tagline" id="tagline"><span class="cursor"></span></p>
+  <section class="hero">
+    <div class="wrap">
+      <span class="kicker">University ASIC &amp; VLSI Clubs</span>
+      <h1>The <span class="g">ASIC</span> Network</h1>
+      <p class="lead">A collective of university ASIC and VLSI clubs. Independent student groups, working in the open, sharing what we learn.</p>
       <div class="cta">
-        <a href="#join" class="btn brk">REGISTER A CLUB</a>
+        <a href="#join" class="btn primary">Register a club</a>
         <a data-link="github" href="#" target="_blank" rel="noopener" class="btn ghost">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>VIEW GITHUB
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View GitHub
         </a>
       </div>
+    </div>
+    <div class="wrap banner">
+      <figure>
+        <img src="banner.png" alt="The ASIC Network — circuit board banner with central ASIC chip logo">
+        <figcaption>Silicon is a team sport</figcaption>
+      </figure>
     </div>
   </section>
 
   <!-- ABOUT -->
   <section id="about" class="module reveal">
-    <div class="marker"><span class="idx">01</span><span class="txt">SIGNAL</span><span class="ln"></span><span class="dot"></span></div>
-    <h2>WHAT IT IS</h2>
-    <p class="lede"><b>The ASIC Network</b> is a collective of university ASIC and VLSI clubs. Independent student groups, working in the open, sharing what we learn.</p>
-    <p class="lede">Chip design is hard to break into and easy to do alone. The network pools that effort. Right now that means shared documentation and a biweekly cadence where clubs trade progress, flows, and gotchas. No gatekeeping, no silos, just student groups building together.</p>
+    <div class="wrap">
+      <div class="marker"><span class="num">01</span><span class="txt">Signal</span><span class="rule"></span></div>
+      <h2>What it is</h2>
+      <p class="lede"><b>The ASIC Network</b> is a collective of university ASIC and VLSI clubs — independent student groups, working in the open, sharing what we learn.</p>
+      <p class="lede">Chip design is hard to break into and easy to do alone. The network pools that effort. Right now that means shared documentation and a biweekly cadence where clubs trade progress, flows, and gotchas. No gatekeeping, no silos — just one signal across independent clubs building together.</p>
+    </div>
   </section>
 
   <!-- WHAT WE DO -->
-  <section id="work" class="module reveal">
-    <div class="marker"><span class="idx">02</span><span class="txt">OPERATIONS</span><span class="ln"></span><span class="dot"></span></div>
-    <h2>WHAT WE DO</h2>
-    <p class="lede">Small and concrete for now. The point is momentum and shared knowledge between clubs.</p>
-    <div class="grid c4">
-      <div class="card"><div class="top"><span class="n">01</span><span class="mini-led"></span></div><h3>DOCUMENTATION</h3><p>Open, shared docs. Tooling notes, design flows, and guides any member club can use and contribute to.</p></div>
-      <div class="card"><div class="top"><span class="n">02</span><span class="mini-led"></span></div><h3>BIWEEKLY UPDATES</h3><p>Every two weeks clubs share progress and blockers. A simple rhythm to keep things moving and learn from each other.</p></div>
-      <div class="card"><div class="top"><span class="n">03</span><span class="mini-led"></span></div><h3>OPEN ON GITHUB</h3><p>Everything lives in the open. Fork the repos, file issues, send pull requests.</p></div>
-      <div class="card"><div class="top"><span class="n">04</span><span class="mini-led"></span></div><h3>COMMUNITY</h3><p>A shared Discord where clubs talk day to day. Register below to get an invite.</p></div>
+  <section id="work" class="module alt reveal">
+    <div class="wrap">
+      <div class="marker"><span class="num">02</span><span class="txt">Operations</span><span class="rule"></span></div>
+      <h2>What we do</h2>
+      <p class="lede">Small and concrete for now. The point is momentum and shared knowledge between clubs.</p>
+      <div class="grid">
+        <div class="card"><span class="n">01</span><h3>Documentation</h3><p>Open, shared docs. Tooling notes, design flows, and guides any member club can use and contribute to.</p></div>
+        <div class="card"><span class="n">02</span><h3>Biweekly updates</h3><p>Every two weeks clubs share progress and blockers. A simple rhythm to keep things moving and learn from each other.</p></div>
+        <div class="card"><span class="n">03</span><h3>Open on GitHub</h3><p>Everything lives in the open. Fork the repos, file issues, send pull requests.</p></div>
+        <div class="card"><span class="n">04</span><h3>Community</h3><p>A shared Discord where clubs talk day to day. Register below to get an invite.</p></div>
+      </div>
     </div>
   </section>
 
-  <!-- NETWORK (decorative) -->
-  <section id="network" class="module reveal">
-    <div class="marker"><span class="idx">03</span><span class="txt">NETWORK</span><span class="ln"></span><span class="dot"></span></div>
-    <h2>ONE NETWORK</h2>
-    <p class="lede">Independent clubs, one signal. Each club runs itself. Together we share docs, updates, and a community.</p>
-    <div class="screen net-screen" aria-label="Decorative animation of connected nodes">
-      <canvas id="netmap" aria-hidden="true"></canvas>
-      <div class="graticule"></div>
-      <div class="net-hud tl">NETWORK<br><b>LIVE SIGNAL</b></div>
-      <div class="net-hud tr">SWEEP 360&#176;<br>STATUS NOMINAL</div>
-      <div class="net-hud bl">EACH NODE = A MEMBER CLUB</div>
-    </div>
-  </section>
-
-  <!-- JOIN / REGISTER -->
+  <!-- JOIN -->
   <section id="join" class="module reveal">
-    <div class="marker"><span class="idx">04</span><span class="txt">REGISTER</span><span class="ln"></span><span class="dot"></span></div>
-    <h2>REGISTER YOUR CLUB</h2>
-    <p class="lede">Got an ASIC or VLSI club at your university? Register it below. You will get your node details and an invite to the Discord.</p>
-    <div class="reg-wrap">
-      <div class="screen form-screen">
-        <div class="graticule"></div>
-        <div class="prompt">NEW NODE // CLUB REGISTRATION</div>
-        <form id="reg-form" novalidate>
-          <!-- honeypot: hidden from people, traps bots (Web3Forms convention) -->
-          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
-          <div class="field">
-            <label for="reg-uni">UNIVERSITY <span class="req">*</span></label>
-            <input id="reg-uni" type="text" autocomplete="organization" placeholder="e.g. State University">
-            <div class="msg">Required.</div>
-          </div>
-          <div class="field">
-            <label for="reg-club">CLUB NAME <span class="req">*</span></label>
-            <input id="reg-club" type="text" placeholder="e.g. ASIC / VLSI Club">
-            <div class="msg">Required.</div>
-          </div>
-          <div class="field">
-            <label for="reg-name">YOUR NAME <span class="req">*</span></label>
-            <input id="reg-name" type="text" autocomplete="name" placeholder="contact person">
-            <div class="msg">Required.</div>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="reg-email">EMAIL</label>
-              <input id="reg-email" type="email" autocomplete="email" placeholder="For Discord Invite">
-              <div class="msg">Check the email format.</div>
-            </div>
-            <div class="field">
-              <label for="reg-country">COUNTRY</label>
-              <input id="reg-country" type="text" placeholder="For Discord Invite">
-            </div>
-          </div>
-          <div class="send-err" id="reg-error" role="alert"></div>
-          <button class="btn brk" type="submit">GENERATE REGISTRATION</button>
-        </form>
-
-        <div class="reg-out" id="reg-out" aria-live="polite">
-          <div class="ok">REGISTRATION SENT</div>
-          <div class="badge-card">
-            <div class="club" id="out-club"></div>
-            <div class="uni" id="out-uni"></div>
-            <div class="kv">
-              <span class="k">CONTACT</span><span class="v" id="out-contact"></span>
-              <span class="k">NODE ID</span><span class="v" id="out-id"></span>
-              <span class="k">STATUS</span><span class="v">PENDING SYNC</span>
-              <span class="k">REGISTERED</span><span class="v" id="out-date"></span>
-            </div>
-          </div>
-          
-          <div class="out-actions">
-            <button class="btn ghost" id="out-copy" type="button">COPY DETAILS</button>
-            <button class="btn ghost" id="out-again" type="button">REGISTER ANOTHER</button>
-          </div>
-          <p class="note">Your registration is sent straight to the network organizers. Joining the Discord is what plugs your club into the network, that is where new clubs are tracked and onboarded.</p>
+    <div class="wrap">
+      <div class="marker"><span class="num">03</span><span class="txt">Register</span><span class="rule"></span></div>
+      <h2>Register your club</h2>
+      <p class="lede">Got an ASIC or VLSI club at your university? Fill out the form and we'll get you plugged into the network.</p>
+      <div class="join-grid">
+        <div class="form-card">
+          <div class="bar"><span class="dot"></span><span>Club Registration</span></div>
+          <!-- Google Form embed. To swap forms later, replace the FORM ID in this src
+               and keep ?embedded=true. Adjust the iframe height in CSS if your form is shorter/taller. -->
+          <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSflbERWWHGI1t2lAvL9D0qajOG1BFYtJWLG4QwET6pyKQwEzg/viewform?embedded=true"
+            title="ASIC Network club registration form"
+            loading="lazy">Loading the form…</iframe>
         </div>
-      </div>
-
-      <div class="side">
-        <h3>HOW IT WORKS</h3>
-        <ol class="steps">
-          <li>Fill in your <b>university</b>, <b>club</b>, and a contact.</li>
-          <li>We get your registration and a generated <b>node ID</b>.</li>
-          <li>Hit <b>Join the Discord</b> to plug in.</li>
-          <li>Start sharing <b>docs</b> and <b>biweekly updates</b> with the network.</li>
-        </ol>
-        <a class="btn ghost" data-link="github" href="#" target="_blank" rel="noopener" style="margin-top:16px;justify-content:center">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>VIEW REPOS ON GITHUB
-        </a>
+        <aside class="side">
+          <h3>How it works</h3>
+          <ol class="steps">
+            <li>Fill in your <b>university</b>, <b>club</b>, and a contact.</li>
+            <li>We get your registration and review it.</li>
+            <li>You get a <b>Discord invite</b> and your club joins the network.</li>
+            <li>Start sharing <b>docs</b> and <b>biweekly updates</b>.</li>
+          </ol>
+          <a class="btn ghost" data-link="github" href="#" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View repos on GitHub
+          </a>
+          <p class="note">Joining the Discord is what plugs your club in — that's where new clubs are tracked and onboarded.</p>
+        </aside>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="foot">
-    <div class="l"><span class="nm">ASIC-NET</span><span>// SILICON IS A TEAM SPORT</span></div>
-    <div class="r">
-      <a data-link="github" href="#" target="_blank" rel="noopener">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GITHUB
-      </a>
-    </div>
-    <div class="eof">&#169; <span id="year">2026</span> THE ASIC NETWORK / <b>SIGNAL NOMINAL</b> / EOF</div>
-  </footer>
+</main>
 
-</div><!-- /bezel -->
-</div><!-- /device -->
+<!-- FOOTER -->
+<footer>
+  <div class="wrap row">
+    <div class="l">
+      <img src="logo.png" alt="ASIC Network logo">
+      <span class="wm">ASIC NETWORK</span>
+      <span class="tag">// Silicon is a team sport</span>
+    </div>
+    <a data-link="github" href="#" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub
+    </a>
+    <div class="cr">&copy; <span id="year">2026</span> The ASIC Network</div>
+  </div>
+</footer>
 
 <script>
 /* ============================================================
-   CONFIG - EDIT HERE
+   CONFIG — EDIT HERE
    ============================================================ */
 const CONFIG = {
-  shortName: "ASIC-NET",
-  github:   "https://github.com/ASIC-Network",
-  discord:  "https://discord.gg/REPLACE-ME",   // EDIT: paste your real Discord invite link
-
-  // EDIT: free access key from https://web3forms.com - enter raghu119@umn.edu and they
-  // email you a key. Paste it below and every registration gets emailed to that address.
-  // The key is safe to expose in client code (it is an alias to your email, not a secret).
-  // Leave the REPLACE text in place to preview the page without sending anything.
-  web3formsKey: "REPLACE-WITH-WEB3FORMS-ACCESS-KEY",
-
-  taglines: [
-    "A network of university ASIC & VLSI clubs.",
-    "Shared docs. Biweekly updates. Built in the open.",
-    "Independent clubs, one signal.",
-  ],
-  decorNodes: 9,   // purely cosmetic count for the animated graph
+  github:  "https://github.com/ASIC-Network",
+  discord: "https://discord.gg/REPLACE-ME",   // EDIT: not linked anywhere yet; invites go out via the form
 };
 
-/* ============================================================
-   wiring + animation (usually no need to edit below)
-   ============================================================ */
-const REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-// link config -> all anchors with matching data-link
 document.querySelectorAll('[data-link="github"]').forEach(a => a.href = CONFIG.github);
 document.querySelectorAll('[data-link="discord"]').forEach(a => a.href = CONFIG.discord);
 
-// clock + year
-function tick(){
-  const d = new Date(), p = n => String(n).padStart(2,"0");
-  const el = document.getElementById("clock");
-  if (el) el.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
-}
-tick(); setInterval(tick, 1000);
 const yr = document.getElementById("year"); if (yr) yr.textContent = new Date().getFullYear();
 
 // reveal on scroll
 (function(){
   const els = document.querySelectorAll(".reveal");
-  if (REDUCE || !("IntersectionObserver" in window)){ els.forEach(e=>e.classList.add("in")); return; }
-  const io = new IntersectionObserver(es => es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }}), { threshold:0.12 });
-  els.forEach(e=>io.observe(e));
-})();
-
-// canvas helper
-function fit(canvas){
-  const dpr = Math.min(window.devicePixelRatio||1, 2);
-  const r = canvas.getBoundingClientRect();
-  const w = Math.max(1, Math.floor(r.width)), h = Math.max(1, Math.floor(r.height));
-  canvas.width = w*dpr; canvas.height = h*dpr;
-  const ctx = canvas.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
-  return { ctx, w, h };
-}
-
-// hero waveform
-(function(){
-  const cv = document.getElementById("wave"); if (!cv) return;
-  let state = fit(cv), t = 0;
-  function draw(){
-    const { ctx, w, h } = state, mid = h*0.5, amp = Math.min(h*0.26, 90);
-    ctx.clearRect(0,0,w,h);
-    function trace(width, color){
-      ctx.beginPath();
-      for (let x=0; x<=w; x+=2){
-        const u = x/w;
-        const y = mid + Math.sin(u*7.5+t*1.6)*amp + Math.sin(u*19+t*2.3+1.1)*amp*0.34 + Math.sin(u*43+t*3.7)*amp*0.12;
-        x===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-      }
-      ctx.lineWidth = width; ctx.strokeStyle = color; ctx.stroke();
-    }
-    ctx.shadowBlur = 16; ctx.shadowColor = "rgba(45,255,160,.9)";
-    trace(6, "rgba(45,255,160,.18)");
-    trace(2.1, "rgba(140,255,210,.95)");
-    ctx.shadowBlur = 0;
-    if (!REDUCE){ t += 0.018; requestAnimationFrame(draw); }
+  if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    els.forEach(e => e.classList.add("in")); return;
   }
-  draw();
-  let to; addEventListener("resize", ()=>{ clearTimeout(to); to=setTimeout(()=>{ state=fit(cv); if(REDUCE) draw(); },150); });
-})();
-
-// decorative network graph (anonymous nodes)
-(function(){
-  const cv = document.getElementById("netmap"); if (!cv) return;
-  // build a loose constellation: 1 hub + ring with jitter
-  const N = Math.max(4, CONFIG.decorNodes|0);
-  const pts = [{ x:0.5, y:0.5, hub:true }];
-  for (let i=0;i<N-1;i++){
-    const a = (i/(N-1))*Math.PI*2 + (i*1.7);
-    const rad = 0.30 + ((i*53)%7)/40;          // pseudo-random radius
-    pts.push({ x:0.5 + Math.cos(a)*rad*0.92, y:0.5 + Math.sin(a)*rad, hub:false });
-  }
-  // a few cross-links between outer nodes
-  const cross = [];
-  for (let i=1;i<pts.length;i++){ if ((i*3)%4===0 && i+2<pts.length) cross.push([i, i+2]); }
-  let state = fit(cv), t = 0;
-  const pad = () => ({ x: state.w*0.14, y: state.h*0.16 });
-  const P = p => { const pd=pad(); return { x:pd.x + p.x*(state.w-2*pd.x), y:pd.y + p.y*(state.h-2*pd.y) }; };
-  function draw(){
-    const { ctx, w, h } = state; ctx.clearRect(0,0,w,h);
-    const hub = P(pts[0]);
-    // spokes
-    for (let i=1;i<pts.length;i++){
-      const p = P(pts[i]);
-      ctx.beginPath(); ctx.moveTo(hub.x,hub.y); ctx.lineTo(p.x,p.y);
-      ctx.lineWidth = 1.2; ctx.strokeStyle = "rgba(45,255,160,.32)"; ctx.stroke();
-      if (!REDUCE){
-        const u = (t*0.3 + i*0.13) % 1, px = hub.x+(p.x-hub.x)*u, py = hub.y+(p.y-hub.y)*u;
-        ctx.beginPath(); ctx.arc(px,py,2.2,0,7); ctx.fillStyle="#bfffe2";
-        ctx.shadowBlur=10; ctx.shadowColor="rgba(45,255,160,.9)"; ctx.fill(); ctx.shadowBlur=0;
-      }
-    }
-    // cross links
-    ctx.setLineDash([3,7]); ctx.lineDashOffset = -t*20;
-    cross.forEach(([a,b])=>{ const pa=P(pts[a]), pb=P(pts[b]); ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.lineWidth=1; ctx.strokeStyle="rgba(45,255,160,.18)"; ctx.stroke(); });
-    ctx.setLineDash([]);
-    // nodes
-    pts.forEach((pt,i)=>{
-      const p = P(pt), r = pt.hub ? 7 : 4.5;
-      if (pt.hub && !REDUCE){
-        const rr = r + 5 + Math.sin(t*2.4)*3;
-        ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(6,rr),0,7); ctx.strokeStyle="rgba(45,255,160,.45)"; ctx.lineWidth=1; ctx.stroke();
-      }
-      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,7);
-      ctx.fillStyle = pt.hub ? "#d8ffee" : "#2dffa0";
-      ctx.shadowBlur = 14; ctx.shadowColor = "#2dffa0"; ctx.fill(); ctx.shadowBlur = 0;
-    });
-    if (!REDUCE){ t += 0.016; requestAnimationFrame(draw); }
-  }
-  draw();
-  let to; addEventListener("resize", ()=>{ clearTimeout(to); to=setTimeout(()=>{ state=fit(cv); if(REDUCE) draw(); },150); });
-})();
-
-// hero tagline typewriter
-(function(){
-  const el = document.getElementById("tagline"); if (!el) return;
-  const cur = '<span class="cursor"></span>';
-  if (REDUCE){ el.innerHTML = CONFIG.taglines[0] + " " + cur; return; }
-  let li=0, ci=0, del=false;
-  (function step(){
-    const phrase = CONFIG.taglines[li];
-    ci += del ? -1 : 1;
-    el.innerHTML = phrase.slice(0,ci) + cur;
-    let wait = del ? 28 : 55;
-    if (!del && ci===phrase.length){ del=true; wait=1700; }
-    else if (del && ci===0){ del=false; li=(li+1)%CONFIG.taglines.length; wait=350; }
-    setTimeout(step, wait);
-  })();
-})();
-
-// registration form -> emails the network owner via Web3Forms (no backend)
-(function(){
-  const form = document.getElementById("reg-form"), out = document.getElementById("reg-out");
-  if (!form || !out) return;
-  const $ = id => document.getElementById(id);
-  const errLine = $("reg-error");
-  const btn = form.querySelector('button[type="submit"]');
-  function hash(str){ let h=5381; for(let i=0;i<str.length;i++) h=((h<<5)+h+str.charCodeAt(i))>>>0; return h.toString(36).toUpperCase(); }
-  function showErr(t){ if(errLine){ errLine.textContent = t; errLine.classList.add("show"); } }
-  function clearErr(){ if(errLine){ errLine.textContent = ""; errLine.classList.remove("show"); } }
-
-  function showSuccess(club, uni, country, name, email, id, date){
-    $("out-club").textContent   = club;
-    $("out-uni").textContent    = uni + (country ? " / " + country : "");
-    $("out-contact").textContent= name + (email ? "  <" + email + ">" : "");
-    $("out-id").textContent     = id;
-    $("out-date").textContent   = date;
-    out.dataset.copy =
-      "ASIC Network - club registration\n" +
-      "Club: " + club + "\nUniversity: " + uni +
-      (country ? "\nCountry: " + country : "") +
-      "\nContact: " + name + (email ? " <" + email + ">" : "") +
-      "\nNode ID: " + id + "\nRegistered: " + date;
-    form.style.display = "none";
-    out.style.display  = "block";
-    out.scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "nearest" });
-  }
-
-  form.addEventListener("submit", async e=>{
-    e.preventDefault();
-    clearErr();
-
-    let ok = true;
-    [["reg-uni"],["reg-club"],["reg-name"]].forEach(([id])=>{
-      const el = $(id), wrap = el.closest(".field");
-      if (!el.value.trim()){ wrap.classList.add("err"); ok=false; } else wrap.classList.remove("err");
-    });
-    const emailEl = $("reg-email"), emailWrap = emailEl.closest(".field");
-    if (emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())){ emailWrap.classList.add("err"); ok=false; } else emailWrap.classList.remove("err");
-    if (!ok) return;
-
-    const uni=$("reg-uni").value.trim(), club=$("reg-club").value.trim(), name=$("reg-name").value.trim();
-    const email=$("reg-email").value.trim(), country=$("reg-country").value.trim();
-    const id = "ASN-" + hash(uni+"|"+club+"|"+name).slice(0,6).padStart(6,"0");
-    const date = new Date().toISOString().slice(0,10);
-
-    const haveKey = CONFIG.web3formsKey && !/REPLACE/i.test(CONFIG.web3formsKey);
-
-    // No key configured -> just preview locally so the page still works.
-    if (!haveKey){ showSuccess(club, uni, country, name, email, id, date); return; }
-
-    const payload = {
-      access_key: CONFIG.web3formsKey,
-      subject: "ASIC-Net // new club: " + club + " @ " + uni,
-      from_name: "ASIC-Net Registration",
-      botcheck: form.botcheck ? form.botcheck.checked : false,
-      University: uni,
-      Club: club,
-      Contact: name,
-      Country: country || "(not provided)",
-      "Node ID": id,
-      Registered: date
-    };
-    if (email) payload.email = email;       // lowercase "email" sets the reply-to address
-    else payload.Email = "(not provided)";
-
-    const label = btn.textContent;
-    btn.disabled = true; btn.textContent = "TRANSMITTING...";
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json().catch(()=>({ success:false }));
-      if (!res.ok || !data.success) throw new Error((data && data.message) || "submission failed");
-    } catch (err){
-      btn.disabled = false; btn.textContent = label;
-      showErr("Could not send (" + (err.message || "network error") + "). Check your connection and try again.");
-      return;
-    }
-    btn.disabled = false; btn.textContent = label;
-    showSuccess(club, uni, country, name, email, id, date);
-
-    /* ----------------------------------------------------------------
-       ALTERNATIVE: FormSubmit (no signup at all, but your email address
-       is visible in the page source). Swap the fetch above for this and
-       you can ignore the Web3Forms key entirely:
-
-       const res = await fetch("https://formsubmit.co/ajax/raghu119@umn.edu", {
-         method: "POST",
-         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-         body: JSON.stringify({
-           _subject: "ASIC-Net new club: " + club,
-           University: uni, Club: club, Contact: name,
-           Email: email, Country: country, "Node ID": id, Registered: date
-         })
-       });
-       const data = await res.json();   // FormSubmit returns { success: "true" }
-       // The very first submission triggers a one-time confirmation email
-       // you have to click before anything else comes through.
-       ---------------------------------------------------------------- */
-  });
-
-  $("out-copy").addEventListener("click", async ()=>{
-    const b = $("out-copy"), label = b.textContent;
-    try { await navigator.clipboard.writeText(out.dataset.copy || ""); b.textContent = "COPIED"; }
-    catch(_) { b.textContent = "COPY FAILED"; }
-    setTimeout(()=> b.textContent = label, 1400);
-  });
-
-  $("out-again").addEventListener("click", ()=>{
-    form.reset();
-    form.querySelectorAll(".field.err").forEach(f=>f.classList.remove("err"));
-    clearErr();
-    out.style.display = "none";
-    form.style.display = "block";
-    form.scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "nearest" });
-  });
-})();
-
-// boot sequence
-(function(){
-  const el = document.getElementById("boot"); if (!el || REDUCE) return;
-  const lines = [
-    "[ " + CONFIG.shortName + " // OPEN SILICON NETWORK ]",
-    "> POST .......................... OK",
-    "> PHOSPHOR DISPLAY .............. OK",
-    "> DOCS LINK .................... OK",
-    "> COMMUNITY SYNC ............... OK",
-    "> READY.",
-  ];
-  el.classList.add("run");
-  let i=0, buf="";
-  el.addEventListener("click", ()=>{ el.classList.add("done"); setTimeout(()=>el.remove(),500); });
-  (function line(){
-    if (i>=lines.length){ setTimeout(()=>el.classList.add("done"),360); setTimeout(()=>el.remove(),900); return; }
-    buf += lines[i] + "\n"; el.textContent = buf; i++;
-    setTimeout(line, i===1?260:150);
-  })();
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  els.forEach(e => io.observe(e));
 })();
 </script>
 </body>
