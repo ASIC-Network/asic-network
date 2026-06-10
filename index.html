@@ -9,11 +9,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 /* ============================================================
    THE ASIC NETWORK — minimal blueprint theme
    Edit CONFIG in <script> for GitHub / Discord links.
    Images expected in repo root: banner.png, logo.png
+   Network map data lives in universities.csv (repo root).
    ============================================================ */
 :root{
   --navy:#03418a;          /* sampled from banner */
@@ -45,6 +47,7 @@ img{max-width:100%;display:block}
 @keyframes flow{to{stroke-dashoffset:-1000}}
 @keyframes sheen{to{transform:translateX(120%)}}
 @keyframes dotpulse{0%,100%{box-shadow:0 0 0 3px rgba(3,65,138,.16)}50%{box-shadow:0 0 0 7px rgba(3,65,138,.04)}}
+@keyframes nodePing{0%{transform:scale(.55);opacity:.9}75%,100%{transform:scale(2.1);opacity:0}}
 
 /* ---------- top nav ---------- */
 .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -133,6 +136,38 @@ h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.05;letter-
 .card h3{font-size:.96rem;font-weight:700;letter-spacing:.01em;color:var(--ink);margin:12px 0 8px}
 .card p{font-size:.9rem;color:var(--muted)}
 
+/* ---------- network map ---------- */
+.map-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -34px rgba(3,65,138,.4);margin-top:34px}
+.map-card .bar{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--soft)}
+.map-card .bar .dot{width:8px;height:8px;border-radius:50%;background:var(--navy);animation:dotpulse 2.4s ease-in-out infinite;flex:none}
+.map-card .bar .lbl{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
+.map-card .bar .stats{margin-left:auto;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
+#netmap{height:520px;background:var(--soft);position:relative;z-index:0}
+#netmap .leaflet-tile-pane{filter:grayscale(.25) saturate(.85)}
+#netmap path.flowline{stroke-dasharray:14 986;animation:flow 3.4s linear infinite;filter:drop-shadow(0 0 3px rgba(47,111,214,.55))}
+.map-fallback{display:flex;align-items:center;justify-content:center;height:100%;padding:28px;text-align:center;font-family:var(--mono);font-size:.76rem;line-height:1.7;color:var(--muted)}
+.uni-node{background:none!important;border:none!important}
+.uni-node .ring{position:absolute;inset:0;border-radius:50%;background:rgba(47,111,214,.35);animation:nodePing 2.8s ease-out infinite}
+.uni-node .core{position:absolute;inset:3px;border-radius:50%;background:var(--navy);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--navy)}
+.uni-node.prog .ring{background:rgba(47,111,214,.18);animation-duration:3.6s}
+.uni-node.prog .core{background:#fff;border:2px solid var(--blue);box-shadow:none}
+.uni-node.hub .core{box-shadow:0 0 0 1.5px var(--navy),0 0 0 6px rgba(3,65,138,.1)}
+.leaflet-container{font-family:var(--font)}
+.leaflet-popup-content-wrapper{border-radius:10px;border:1px solid var(--line);box-shadow:0 14px 34px -18px rgba(3,65,138,.45)}
+.leaflet-popup-content{margin:12px 14px;line-height:1.5}
+.leaflet-tooltip{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;color:var(--ink);border:1px solid var(--line);border-radius:6px;box-shadow:0 8px 20px -12px rgba(3,65,138,.4)}
+.uni-pop .nm{font-weight:700;font-size:.92rem;color:var(--ink);margin-bottom:7px}
+.uni-pop .pill{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
+.uni-pop .pill.done{background:var(--soft);color:var(--navy);border:1px solid var(--trace)}
+.uni-pop .pill.prog{background:#fff;color:var(--blue);border:1px dashed var(--blue)}
+.uni-pop .row{font-size:.78rem;color:var(--muted);margin-top:7px}
+.map-legend{display:flex;flex-wrap:wrap;gap:8px 22px;padding:12px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.map-legend span{display:inline-flex;align-items:center;gap:8px}
+.map-legend i{width:10px;height:10px;border-radius:50%;flex:none}
+.map-legend i.done{background:var(--navy)}
+.map-legend i.prog{background:#fff;box-shadow:inset 0 0 0 2px var(--blue)}
+.map-legend i.line{width:22px;height:2px;border-radius:1px;background:var(--blue)}
+
 /* ---------- join / register ---------- */
 .join-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:22px;margin-top:34px;align-items:start}
 .form-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -34px rgba(3,65,138,.4)}
@@ -170,6 +205,8 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
 @media(max-width:600px){
   .links a:not(.gh){display:none}
   .grid{grid-template-columns:1fr}
+  #netmap{height:400px}
+  .map-card .bar .stats{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -193,6 +230,7 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
     <nav class="links" aria-label="Primary">
       <a href="#about">About</a>
       <a href="#work">What we do</a>
+      <a href="#network">Network</a>
       <a href="#join">Join</a>
       <a class="gh" data-link="github" href="#" target="_blank" rel="noopener">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub
@@ -277,10 +315,29 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
     </div>
   </section>
 
+  <!-- NETWORK MAP -->
+  <section id="network" class="module reveal">
+    <div class="wrap">
+      <div class="marker"><span class="num">03</span><span class="txt">Topology</span><span class="rule"></span></div>
+      <h2>Connected universities</h2>
+      <p class="lede">Every node is a university plugged into the network. <b>Solid nodes</b> are completed connections; hollow nodes are in progress.</p>
+      <p class="lede">The map reads straight from <b>universities.csv</b> in the repo root — add a row, push, and the new node shows up.</p>
+      <div class="map-card">
+        <div class="bar"><span class="dot"></span><span class="lbl">Network map</span><span class="stats" id="map-stats"></span></div>
+        <div id="netmap" aria-label="World map of universities in the ASIC Network"></div>
+        <div class="map-legend">
+          <span><i class="done"></i>Completed</span>
+          <span><i class="prog"></i>In progress</span>
+          <span><i class="line"></i>Signal path</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- JOIN -->
   <section id="join" class="module reveal">
     <div class="wrap">
-      <div class="marker"><span class="num">03</span><span class="txt">Register</span><span class="rule"></span></div>
+      <div class="marker"><span class="num">04</span><span class="txt">Register</span><span class="rule"></span></div>
       <h2>Register your club</h2>
       <p class="lede">Got an ASIC or VLSI club at your university? Fill out the form and we'll get you plugged into the network.</p>
       <div class="join-grid">
@@ -327,6 +384,7 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 /* ============================================================
    CONFIG — EDIT HERE
@@ -366,6 +424,105 @@ const REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   upd();
   addEventListener("scroll", () => { if (!ticking){ requestAnimationFrame(upd); ticking = true; } }, { passive: true });
   addEventListener("resize", upd);
+})();
+
+/* ============================================================
+   NETWORK MAP — reads universities.csv (repo root)
+   Columns: university, people, status, lat, lng
+   Add a row + push to add a node. A status containing
+   "complet" / "connect" / "contact" renders as a solid node;
+   anything else (e.g. "In progress") renders hollow.
+   The hub (origin of the signal traces) is the row matching
+   "minnesota", falling back to the first row.
+   ============================================================ */
+(async function(){
+  const el = document.getElementById("netmap");
+  if (!el) return;
+  if (typeof L === "undefined"){ el.innerHTML = '<div class="map-fallback">Map library failed to load.</div>'; return; }
+
+  function parseCSV(text){
+    const rows = []; let row = [], f = "", q = false;
+    for (let i = 0; i < text.length; i++){
+      const c = text[i];
+      if (q){ if (c === '"'){ if (text[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+      else if (c === '"') q = true;
+      else if (c === ","){ row.push(f); f = ""; }
+      else if (c === "\n" || c === "\r"){ if (c === "\r" && text[i+1] === "\n") i++; row.push(f); f = ""; if (row.some(v => v.trim() !== "")) rows.push(row); row = []; }
+      else f += c;
+    }
+    row.push(f); if (row.some(v => v.trim() !== "")) rows.push(row);
+    const head = rows.shift().map(h => h.trim().toLowerCase());
+    return rows.map(r => Object.fromEntries(head.map((h, j) => [h, (r[j] || "").trim()])));
+  }
+  const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  // quadratic bezier in lat/lng space, bowed north for a flight-route look
+  function arc(a, b, n = 56){
+    const bump = Math.min(26, 2 + Math.abs(b[1]-a[1])*.16 + Math.abs(b[0]-a[0])*.06);
+    const c = [Math.min(80, (a[0]+b[0])/2 + bump), (a[1]+b[1])/2];
+    const pts = [];
+    for (let i = 0; i <= n; i++){
+      const t = i/n, u = 1-t;
+      pts.push([u*u*a[0] + 2*u*t*c[0] + t*t*b[0], u*u*a[1] + 2*u*t*c[1] + t*t*b[1]]);
+    }
+    return pts;
+  }
+
+  let unis;
+  try{
+    const res = await fetch("universities.csv", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    unis = parseCSV(await res.text()).filter(u => u.university && Number.isFinite(parseFloat(u.lat)) && Number.isFinite(parseFloat(u.lng)));
+  } catch(e){
+    el.innerHTML = '<div class="map-fallback">Could not load universities.csv.<br>If you are viewing this locally, serve it over HTTP (e.g. <code>python3 -m http.server</code>) — fetch() does not work from file://.</div>';
+    return;
+  }
+  if (!unis.length){ el.innerHTML = '<div class="map-fallback">universities.csv has no usable rows.</div>'; return; }
+
+  const isDone = s => /complet|connect|contact/i.test(s || "");
+  const hub = unis.find(u => /minnesota/i.test(u.university)) || unis[0];
+  const ll = u => [parseFloat(u.lat), parseFloat(u.lng)];
+
+  const map = L.map(el, { scrollWheelZoom: false, worldCopyJump: true, zoomSnap: .5 });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    subdomains: "abcd", maxZoom: 12,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  }).addTo(map);
+
+  // signal traces: hub -> every node (quiet base line + flowing pulse on top)
+  unis.forEach((u, i) => {
+    if (u === hub) return;
+    const pts = arc(ll(hub), ll(u));
+    L.polyline(pts, { color: "#c2d4f0", weight: 1.5, opacity: .9, interactive: false }).addTo(map);
+    const f = L.polyline(pts, { className: "flowline", color: "#2f6fd6", weight: 2, interactive: false }).addTo(map);
+    if (f._path){ f._path.setAttribute("pathLength", "1000"); f._path.style.animationDelay = (i * .4 % 3.4).toFixed(2) + "s"; }
+  });
+
+  // nodes
+  unis.forEach((u, i) => {
+    const done = isDone(u.status), isHub = u === hub, sz = isHub ? 22 : 16;
+    const icon = L.divIcon({
+      className: "uni-node " + (done ? "done" : "prog") + (isHub ? " hub" : ""),
+      iconSize: [sz, sz], iconAnchor: [sz/2, sz/2], popupAnchor: [0, -sz/2 - 2],
+      html: '<span class="ring" style="animation-delay:' + (i * .23 % 2.8).toFixed(2) + 's"></span><span class="core"></span>'
+    });
+    const pop = '<div class="uni-pop"><div class="nm">' + esc(u.university) + '</div>'
+      + '<span class="pill ' + (done ? "done" : "prog") + '">' + esc(u.status || "unknown") + '</span>'
+      + (u.people ? '<div class="row">People: ' + esc(u.people) + '</div>' : '')
+      + (isHub ? '<div class="row">Network hub</div>' : '')
+      + '</div>';
+    L.marker(ll(u), { icon })
+      .bindTooltip(esc(u.university), { direction: "top", offset: [0, -sz/2 - 2] })
+      .bindPopup(pop)
+      .addTo(map);
+  });
+
+  map.fitBounds(L.latLngBounds(unis.map(ll)), { padding: [36, 36] });
+
+  const stats = document.getElementById("map-stats");
+  if (stats){
+    const d = unis.filter(u => isDone(u.status)).length;
+    stats.textContent = unis.length + " nodes / " + d + " completed / " + (unis.length - d) + " in progress";
+  }
 })();
 </script>
 </body>
