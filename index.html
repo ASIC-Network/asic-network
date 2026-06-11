@@ -181,6 +181,8 @@ h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.05;letter-
 .person h3{font-size:.95rem;font-weight:700;letter-spacing:.01em;color:var(--ink);line-height:1.3}
 .person .uni{display:inline-block;font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);background:var(--soft);border:1px solid var(--trace);border-radius:5px;padding:3px 7px;margin-top:7px}
 .person p{font-size:.84rem;color:var(--muted);margin-top:9px;line-height:1.55}
+.person[hidden]{display:none}
+.people-toggle{display:flex;justify-content:center;margin-top:24px}
 
 /* ---------- join / register ---------- */
 .join-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:22px;margin-top:34px;align-items:start}
@@ -359,6 +361,7 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
       <p class="lede">The humans behind the nodes — students across every connected club, as many per university as it takes. Pulled straight from <b>people.csv</b>, one row per person.</p>
       <p class="lede">Headshots are optional: drop <b>name.png</b> into the <b>profile pictures/</b> folder, named exactly as in the CSV. No file, initials instead.</p>
       <div class="people-grid" id="people-grid"></div>
+      <div class="people-toggle"><button id="people-toggle-btn" class="btn ghost" type="button" aria-controls="people-grid" aria-expanded="false" hidden>Show all</button></div>
     </div>
   </section>
 
@@ -514,6 +517,26 @@ async function buildPeople(){
       + (p.description ? '<p>' + esc(p.description) + '</p>' : '')
       + '</div></article>';
   }).join("");
+
+  // collapsible: show the first LIMIT people, button reveals the rest
+  const LIMIT = 6;
+  const btn = document.getElementById("people-toggle-btn");
+  if (btn && people.length > LIMIT){
+    const cards = grid.querySelectorAll(".person");
+    const apply = collapsed => {
+      cards.forEach((el, i) => { el.hidden = collapsed && i >= LIMIT; });
+      btn.textContent = collapsed ? "Show all " + people.length + " people \u25be" : "Show fewer \u25b4";
+      btn.setAttribute("aria-expanded", String(!collapsed));
+    };
+    let collapsed = true;
+    apply(collapsed);
+    btn.hidden = false;
+    btn.addEventListener("click", () => {
+      collapsed = !collapsed;
+      apply(collapsed);
+      if (collapsed) document.getElementById("people").scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "start" });
+    });
+  }
   return people;
 }
 
