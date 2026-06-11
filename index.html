@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 /* ============================================================
    THE ASIC NETWORK — minimal blueprint theme
@@ -47,7 +46,6 @@ img{max-width:100%;display:block}
 @keyframes flow{to{stroke-dashoffset:-1000}}
 @keyframes sheen{to{transform:translateX(120%)}}
 @keyframes dotpulse{0%,100%{box-shadow:0 0 0 3px rgba(3,65,138,.16)}50%{box-shadow:0 0 0 7px rgba(3,65,138,.04)}}
-@keyframes nodePing{0%{transform:scale(.55);opacity:.9}75%,100%{transform:scale(2.1);opacity:0}}
 
 /* ---------- top nav ---------- */
 .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -136,37 +134,39 @@ h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.05;letter-
 .card h3{font-size:.96rem;font-weight:700;letter-spacing:.01em;color:var(--ink);margin:12px 0 8px}
 .card p{font-size:.9rem;color:var(--muted)}
 
-/* ---------- network map ---------- */
-.map-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -34px rgba(3,65,138,.4);margin-top:34px}
-.map-card .bar{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--soft)}
-.map-card .bar .dot{width:8px;height:8px;border-radius:50%;background:var(--navy);animation:dotpulse 2.4s ease-in-out infinite;flex:none}
-.map-card .bar .lbl{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
-.map-card .bar .stats{margin-left:auto;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
-#netmap{height:520px;background:var(--soft);position:relative;z-index:0}
-#netmap .leaflet-tile-pane{filter:grayscale(.25) saturate(.85)}
-#netmap path.flowline{stroke-dasharray:14 986;animation:flow 3.4s linear infinite;filter:drop-shadow(0 0 3px rgba(47,111,214,.55))}
-.map-fallback{display:flex;align-items:center;justify-content:center;height:100%;padding:28px;text-align:center;font-family:var(--mono);font-size:.76rem;line-height:1.7;color:var(--muted)}
-.uni-node{background:none!important;border:none!important}
-.uni-node .ring{position:absolute;inset:0;border-radius:50%;background:rgba(47,111,214,.35);animation:nodePing 2.8s ease-out infinite}
-.uni-node .core{position:absolute;inset:3px;border-radius:50%;background:var(--navy);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--navy)}
-.uni-node.prog .ring{background:rgba(47,111,214,.18);animation-duration:3.6s}
-.uni-node.prog .core{background:#fff;border:2px solid var(--blue);box-shadow:none}
-.uni-node.hub .core{box-shadow:0 0 0 1.5px var(--navy),0 0 0 6px rgba(3,65,138,.1)}
-.leaflet-container{font-family:var(--font)}
-.leaflet-popup-content-wrapper{border-radius:10px;border:1px solid var(--line);box-shadow:0 14px 34px -18px rgba(3,65,138,.45)}
-.leaflet-popup-content{margin:12px 14px;line-height:1.5}
-.leaflet-tooltip{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;color:var(--ink);border:1px solid var(--line);border-radius:6px;box-shadow:0 8px 20px -12px rgba(3,65,138,.4)}
-.uni-pop .nm{font-weight:700;font-size:.92rem;color:var(--ink);margin-bottom:7px}
-.uni-pop .pill{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
-.uni-pop .pill.done{background:var(--soft);color:var(--navy);border:1px solid var(--trace)}
-.uni-pop .pill.prog{background:#fff;color:var(--blue);border:1px dashed var(--blue)}
-.uni-pop .row{font-size:.78rem;color:var(--muted);margin-top:7px}
-.map-legend{display:flex;flex-wrap:wrap;gap:8px 22px;padding:12px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.map-legend span{display:inline-flex;align-items:center;gap:8px}
-.map-legend i{width:10px;height:10px;border-radius:50%;flex:none}
-.map-legend i.done{background:var(--navy)}
-.map-legend i.prog{background:#fff;box-shadow:inset 0 0 0 2px var(--blue)}
-.map-legend i.line{width:22px;height:2px;border-radius:1px;background:var(--blue)}
+/* ---------- network mesh ---------- */
+.net-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -34px rgba(3,65,138,.4);margin-top:34px}
+.net-card .bar{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--soft)}
+.net-card .bar .dot{width:8px;height:8px;border-radius:50%;background:var(--navy);animation:dotpulse 2.4s ease-in-out infinite;flex:none}
+.net-card .bar .lbl{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
+.net-card .bar .stats{margin-left:auto;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
+#netmesh{position:relative;height:520px;background-color:#fbfcfe;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:34px 34px;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+#netmesh svg{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#netmesh svg.dragging{cursor:grabbing}
+#netmesh line{stroke:var(--trace);stroke-width:1;opacity:.3;transition:opacity .18s ease}
+#netmesh line.pend{stroke-dasharray:4 5;opacity:.17}
+#netmesh svg.focus line{opacity:.04}
+#netmesh svg.focus line.on{stroke:var(--blue);stroke-width:1.4;opacity:.95;filter:drop-shadow(0 0 3px rgba(47,111,214,.5))}
+#netmesh .node{cursor:grab}
+#netmesh .node .o{fill:#fff;stroke:var(--navy);stroke-width:1.5}
+#netmesh .node .i{fill:var(--navy)}
+#netmesh .node.prog .o{stroke:var(--blue);stroke-dasharray:3 3}
+#netmesh .node text{font-family:var(--mono);font-size:10px;letter-spacing:.05em;fill:var(--muted);text-anchor:middle;pointer-events:none}
+#netmesh .node.on text{fill:var(--ink);font-weight:600}
+.net-fallback{display:flex;align-items:center;justify-content:center;height:100%;padding:28px;text-align:center;font-family:var(--mono);font-size:.76rem;line-height:1.7;color:var(--muted)}
+.net-info{position:absolute;left:12px;bottom:12px;z-index:5;max-width:min(340px,80%);background:rgba(255,255,255,.93);backdrop-filter:blur(5px);border:1px solid var(--line);border-radius:10px;padding:11px 14px;box-shadow:0 14px 34px -18px rgba(3,65,138,.45);display:none;pointer-events:none}
+.net-info.show{display:block}
+.net-info .nm{font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:6px}
+.net-info .row{font-size:.76rem;color:var(--muted);margin-top:7px}
+.pill{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
+.pill.conn{background:var(--soft);color:var(--navy);border:1px solid var(--trace)}
+.pill.prog{background:#fff;color:var(--blue);border:1px dashed var(--blue)}
+.net-legend{display:flex;flex-wrap:wrap;gap:8px 22px;padding:12px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.net-legend span{display:inline-flex;align-items:center;gap:8px}
+.net-legend i{width:10px;height:10px;border-radius:50%;flex:none}
+.net-legend i.conn{background:var(--navy)}
+.net-legend i.prog{background:#fff;box-shadow:inset 0 0 0 2px var(--blue)}
+.net-legend i.link{width:22px;height:2px;border-radius:1px;background:var(--trace)}
 
 /* ---------- people roster ---------- */
 .people-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
@@ -221,8 +221,8 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
   .links a:not(.gh){display:none}
   .grid{grid-template-columns:1fr}
   .people-grid{grid-template-columns:1fr}
-  #netmap{height:400px}
-  .map-card .bar .stats{display:none}
+  #netmesh{height:420px}
+  .net-card .bar .stats{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -332,20 +332,20 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
     </div>
   </section>
 
-  <!-- NETWORK MAP -->
+  <!-- NETWORK MESH -->
   <section id="network" class="module reveal">
     <div class="wrap">
       <div class="marker"><span class="num">03</span><span class="txt">Topology</span><span class="rule"></span></div>
       <h2>Connected universities</h2>
-      <p class="lede">Every node is a university plugged into the network. <b>Solid nodes</b> are completed connections; hollow nodes are in progress.</p>
-      <p class="lede">The map reads straight from <b>universities.csv</b> in the repo root — add a row, push, and the new node shows up.</p>
-      <div class="map-card">
-        <div class="bar"><span class="dot"></span><span class="lbl">Network map</span><span class="stats" id="map-stats"></span></div>
-        <div id="netmap" aria-label="World map of universities in the ASIC Network"></div>
-        <div class="map-legend">
-          <span><i class="done"></i>Completed</span>
+      <p class="lede">A network means everyone talks to everyone — so every node links to every other node. <b>Solid nodes</b> are connected; dashed ones are in progress and drift at the edge of the mesh.</p>
+      <p class="lede">Grab a node and throw it around. The mesh reads straight from <b>universities.csv</b> — add a row, push, and a new node springs in.</p>
+      <div class="net-card">
+        <div class="bar"><span class="dot"></span><span class="lbl">Network mesh</span><span class="stats" id="net-stats"></span></div>
+        <div id="netmesh" aria-label="Interactive mesh of universities in the ASIC Network"></div>
+        <div class="net-legend">
+          <span><i class="conn"></i>Connected</span>
           <span><i class="prog"></i>In progress</span>
-          <span><i class="line"></i>Signal path</span>
+          <span><i class="link"></i>Mesh link</span>
         </div>
       </div>
     </div>
@@ -356,7 +356,8 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
     <div class="wrap">
       <div class="marker"><span class="num">04</span><span class="txt">Roster</span><span class="rule"></span></div>
       <h2>People on the network</h2>
-      <p class="lede">The humans behind the nodes — students across every connected club.</p>
+      <p class="lede">The humans behind the nodes — students across every connected club, as many per university as it takes. Pulled straight from <b>people.csv</b>, one row per person.</p>
+      <p class="lede">Headshots are optional: drop <b>name.png</b> into the <b>profile pictures/</b> folder, named exactly as in the CSV. No file, initials instead.</p>
       <div class="people-grid" id="people-grid"></div>
     </div>
   </section>
@@ -411,7 +412,6 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 /* ============================================================
    CONFIG — EDIT HERE
@@ -455,15 +455,19 @@ const REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ============================================================
    DATA-DRIVEN SECTIONS — edit the CSVs, not this code.
-   universities.csv : university, status, lat, lng
+   universities.csv : university, label, status
+     - label is optional; it's the short name under the node.
+       Blank label falls back to a parenthetical in the name
+       (e.g. "(SNU)") or a truncated full name.
+     - a status containing "connect"/"complet"/"contact"
+       renders as a solid node; anything else (e.g.
+       "In progress") renders dashed/hollow
    people.csv       : name, university, description
-   - a status containing "complet"/"connect"/"contact" renders
-     as a solid map node; anything else renders hollow
-   - people are matched to map nodes by university name, so
-     spelling must match between the two CSVs
-   - optional headshots: "profile pictures/<name>.png" where
-     <name> matches the CSV exactly (case-sensitive on Pages);
-     a missing file falls back to initials automatically
+     - matched to mesh nodes by university name, so spelling
+       must match between the two CSVs
+     - optional headshots: "profile pictures/<name>.png" where
+       <name> matches the CSV exactly (case-sensitive on
+       Pages); a missing file falls back to initials
    ============================================================ */
 function parseCSV(text){
   const rows = []; let row = [], f = "", q = false;
@@ -485,17 +489,6 @@ async function loadCSV(url){
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error("HTTP " + res.status);
   return parseCSV(await res.text());
-}
-// quadratic bezier in lat/lng space, bowed north for a flight-route look
-function arc(a, b, n = 56){
-  const bump = Math.min(26, 2 + Math.abs(b[1]-a[1])*.16 + Math.abs(b[0]-a[0])*.06);
-  const c = [Math.min(80, (a[0]+b[0])/2 + bump), (a[1]+b[1])/2];
-  const pts = [];
-  for (let i = 0; i <= n; i++){
-    const t = i/n, u = 1-t;
-    pts.push([u*u*a[0] + 2*u*t*c[0] + t*t*b[0], u*u*a[1] + 2*u*t*c[1] + t*t*b[1]]);
-  }
-  return pts;
 }
 
 /* ---------- people roster ---------- */
@@ -524,74 +517,230 @@ async function buildPeople(){
   return people;
 }
 
-/* ---------- network map ---------- */
-async function buildMap(people){
-  const el = document.getElementById("netmap");
-  if (!el) return;
-  if (typeof L === "undefined"){ el.innerHTML = '<div class="map-fallback">Map library failed to load.</div>'; return; }
+/* ---------- network mesh ----------
+   Full mesh: every node links to every other node.
+   Hand-rolled force simulation (springs + repulsion + gravity),
+   so nodes can be grabbed and thrown around, Obsidian-style. */
+async function buildMesh(people){
+  const host = document.getElementById("netmesh");
+  if (!host) return;
 
   let unis;
   try{
-    unis = (await loadCSV("universities.csv")).filter(u => u.university && Number.isFinite(parseFloat(u.lat)) && Number.isFinite(parseFloat(u.lng)));
+    unis = (await loadCSV("universities.csv")).filter(u => u.university);
   } catch(e){
-    el.innerHTML = '<div class="map-fallback">Could not load universities.csv.<br>If you are viewing this locally, serve it over HTTP (e.g. <code>python3 -m http.server</code>) — fetch() does not work from file://.</div>';
+    host.innerHTML = '<div class="net-fallback">Could not load universities.csv.<br>If you are viewing this locally, serve it over HTTP (e.g. <code>python3 -m http.server</code>) — fetch() does not work from file://.</div>';
     return;
   }
-  if (!unis.length){ el.innerHTML = '<div class="map-fallback">universities.csv has no usable rows.</div>'; return; }
+  if (!unis.length){ host.innerHTML = '<div class="net-fallback">universities.csv has no usable rows.</div>'; return; }
 
+  const isConn = s => /connect|complet|contact/i.test(s || "");
   const byUni = {};
   (people || []).forEach(p => { const k = uniKey(p.university); if (k) (byUni[k] = byUni[k] || []).push(p.name); });
+  const shortLabel = u => {
+    if (u.label) return u.label;
+    const par = /\(([^)]{2,12})\)/.exec(u.university);
+    if (par) return par[1];
+    return u.university.length > 18 ? u.university.slice(0, 17) + "\u2026" : u.university;
+  };
 
-  const isDone = s => /complet|connect|contact/i.test(s || "");
-  const hub = unis.find(u => /minnesota/i.test(u.university)) || unis[0];
-  const ll = u => [parseFloat(u.lat), parseFloat(u.lng)];
+  let W = host.clientWidth || 640, H = host.clientHeight || 520;
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  host.appendChild(svg);
+  const info = document.createElement("div"); info.className = "net-info"; host.appendChild(info);
 
-  const map = L.map(el, { scrollWheelZoom: false, worldCopyJump: true, zoomSnap: .5 });
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    subdomains: "abcd", maxZoom: 12,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-  }).addTo(map);
-
-  // signal traces: hub -> every node (quiet base line + flowing pulse on top)
-  unis.forEach((u, i) => {
-    if (u === hub) return;
-    const pts = arc(ll(hub), ll(u));
-    L.polyline(pts, { color: "#c2d4f0", weight: 1.5, opacity: .9, interactive: false }).addTo(map);
-    const f = L.polyline(pts, { className: "flowline", color: "#2f6fd6", weight: 2, interactive: false }).addTo(map);
-    if (f._path){ f._path.setAttribute("pathLength", "1000"); f._path.style.animationDelay = (i * .4 % 3.4).toFixed(2) + "s"; }
-  });
-
-  // nodes
-  unis.forEach((u, i) => {
-    const done = isDone(u.status), isHub = u === hub, sz = isHub ? 22 : 16;
+  // nodes start huddled at the centre and spring outward
+  const nodes = unis.map((u, i) => {
+    const a = (i / unis.length) * Math.PI * 2;
     const ppl = byUni[uniKey(u.university)] || [];
-    const icon = L.divIcon({
-      className: "uni-node " + (done ? "done" : "prog") + (isHub ? " hub" : ""),
-      iconSize: [sz, sz], iconAnchor: [sz/2, sz/2], popupAnchor: [0, -sz/2 - 2],
-      html: '<span class="ring" style="animation-delay:' + (i * .23 % 2.8).toFixed(2) + 's"></span><span class="core"></span>'
-    });
-    const pop = '<div class="uni-pop"><div class="nm">' + esc(u.university) + '</div>'
-      + '<span class="pill ' + (done ? "done" : "prog") + '">' + esc(u.status || "unknown") + '</span>'
-      + (ppl.length ? '<div class="row">People: ' + esc(ppl.join(", ")) + '</div>' : '')
-      + (isHub ? '<div class="row">Network hub</div>' : '')
-      + '</div>';
-    L.marker(ll(u), { icon })
-      .bindTooltip(esc(u.university), { direction: "top", offset: [0, -sz/2 - 2] })
-      .bindPopup(pop)
-      .addTo(map);
+    return {
+      u, conn: isConn(u.status), ppl,
+      r: Math.min(15, 8 + 2 * Math.sqrt(ppl.length)),
+      x: W / 2 + Math.cos(a) * 46 + (Math.random() - .5) * 18,
+      y: H / 2 + Math.sin(a) * 46 + (Math.random() - .5) * 18,
+      vx: 0, vy: 0, fx: null, fy: null, _vx: 0, _vy: 0, edges: [], el: null
+    };
   });
 
-  map.fitBounds(L.latLngBounds(unis.map(ll)), { padding: [36, 36] });
+  // full mesh: every pair gets an edge
+  const edges = [];
+  for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++){
+    const e = { a: nodes[i], b: nodes[j], pend: !(nodes[i].conn && nodes[j].conn), el: null };
+    edges.push(e); nodes[i].edges.push(e); nodes[j].edges.push(e);
+  }
 
-  const stats = document.getElementById("map-stats");
+  // build DOM: edges underneath, nodes on top
+  edges.forEach(e => {
+    const l = document.createElementNS(NS, "line");
+    if (e.pend) l.setAttribute("class", "pend");
+    svg.appendChild(l); e.el = l;
+  });
+  nodes.forEach(n => {
+    const g = document.createElementNS(NS, "g");
+    g.setAttribute("class", "node" + (n.conn ? "" : " prog"));
+    const o = document.createElementNS(NS, "circle");
+    o.setAttribute("class", "o"); o.setAttribute("r", n.r);
+    g.appendChild(o);
+    if (n.conn){
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("class", "i"); c.setAttribute("r", Math.max(2.5, n.r - 3.5));
+      g.appendChild(c);
+    }
+    const t = document.createElementNS(NS, "text");
+    t.setAttribute("y", n.r + 13); t.textContent = shortLabel(n.u);
+    g.appendChild(t);
+    const title = document.createElementNS(NS, "title");
+    title.textContent = n.u.university;
+    g.appendChild(title);
+    svg.appendChild(g); n.el = g;
+  });
+
+  /* physics */
+  const KS = .003;                                  // spring constant
+  const ALPHA_MIN = .02;
+  let alpha = 1, raf = null, visible = true, dragging = null;
+
+  function tick(){
+    const rest0 = Math.min(W, H) * .42;             // connected<->connected rest length
+    const rest1 = rest0 * 1.45;                     // edges touching an in-progress node sit longer
+    const KR = KS * .64 * Math.pow(rest0, 3);       // repulsion, scaled to the springs
+    for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++){
+      const a = nodes[i], b = nodes[j];
+      let dx = b.x - a.x, dy = b.y - a.y;
+      let d = Math.hypot(dx, dy); if (d < 14) d = 14;
+      const rest = (a.conn && b.conn) ? rest0 : rest1;
+      const f = (KS * (d - rest) - KR / (d * d)) * alpha;
+      const fx = f * dx / d, fy = f * dy / d;
+      a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+    }
+    for (const n of nodes){
+      n.vx += (W / 2 - n.x) * .006 * alpha;         // gentle gravity to the centre,
+      n.vy += (H / 2 - n.y) * .015 * alpha;         // weaker in x so the mesh spreads wide
+      n.vx *= .85; n.vy *= .85;
+      const v = Math.hypot(n.vx, n.vy);
+      if (v > 9){ n.vx *= 9 / v; n.vy *= 9 / v; }
+      if (n.fx != null){ n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; }
+      else { n.x += n.vx; n.y += n.vy; }
+      const m = n.r + 8, mb = n.r + 22;             // soft walls (extra room for labels below)
+      if (n.x < m){ n.x = m; n.vx *= -.4; }
+      if (n.x > W - m){ n.x = W - m; n.vx *= -.4; }
+      if (n.y < m){ n.y = m; n.vy *= -.4; }
+      if (n.y > H - mb){ n.y = H - mb; n.vy *= -.4; }
+    }
+  }
+  function render(){
+    for (const e of edges){
+      e.el.setAttribute("x1", e.a.x); e.el.setAttribute("y1", e.a.y);
+      e.el.setAttribute("x2", e.b.x); e.el.setAttribute("y2", e.b.y);
+    }
+    for (const n of nodes) n.el.setAttribute("transform", "translate(" + n.x + "," + n.y + ")");
+  }
+  function frame(){
+    raf = null;
+    if (!REDUCE || dragging){ tick(); render(); }
+    if (dragging) alpha = .6; else alpha *= .985;
+    if (visible && (alpha > ALPHA_MIN || dragging)) raf = requestAnimationFrame(frame);
+  }
+  function wake(a){
+    alpha = Math.max(alpha, a);
+    if (!raf && visible) raf = requestAnimationFrame(frame);
+  }
+
+  /* hover / selection */
+  let focused = null;
+  function focus(n){
+    if (n === focused) return;
+    if (focused){
+      focused.el.classList.remove("on");
+      focused.edges.forEach(e => e.el.classList.remove("on"));
+    }
+    focused = n;
+    if (n){
+      svg.classList.add("focus");
+      n.el.classList.add("on");
+      n.edges.forEach(e => e.el.classList.add("on"));
+      info.innerHTML = '<div class="nm">' + esc(n.u.university) + '</div>'
+        + '<span class="pill ' + (n.conn ? "conn" : "prog") + '">' + esc(n.u.status || "unknown") + '</span>'
+        + (n.ppl.length ? '<div class="row">People: ' + esc(n.ppl.join(", ")) + '</div>' : '');
+      info.classList.add("show");
+    } else {
+      svg.classList.remove("focus");
+      info.classList.remove("show");
+    }
+  }
+
+  /* drag (grab a node and throw it) */
+  const pt = ev => { const r = svg.getBoundingClientRect(); return { x: ev.clientX - r.left, y: ev.clientY - r.top }; };
+  const pick = p => {
+    let best = null, bd = 1e9;
+    for (const n of nodes){
+      const d = Math.hypot(n.x - p.x, n.y - p.y);
+      if (d < Math.max(n.r + 12, 18) && d < bd){ best = n; bd = d; }
+    }
+    return best;
+  };
+  svg.addEventListener("pointerdown", ev => {
+    const p = pt(ev), n = pick(p);
+    if (!n){ focus(null); return; }
+    dragging = n; n._vx = 0; n._vy = 0;
+    n.fx = p.x; n.fy = p.y;
+    svg.setPointerCapture(ev.pointerId);
+    svg.classList.add("dragging");
+    focus(n); wake(.8); ev.preventDefault();
+  });
+  svg.addEventListener("pointermove", ev => {
+    const p = pt(ev);
+    if (dragging){
+      const n = dragging;
+      n._vx = p.x - n.fx; n._vy = p.y - n.fy;
+      n.fx = Math.max(8, Math.min(W - 8, p.x));
+      n.fy = Math.max(8, Math.min(H - 8, p.y));
+      wake(.7);
+    } else if (ev.pointerType === "mouse"){
+      focus(pick(p));
+    }
+  });
+  const release = () => {
+    if (!dragging) return;
+    const n = dragging;
+    n.vx = Math.max(-10, Math.min(10, n._vx));
+    n.vy = Math.max(-10, Math.min(10, n._vy));
+    n.fx = n.fy = null;
+    dragging = null;
+    svg.classList.remove("dragging");
+    if (REDUCE){ for (let k = 0; k < 150; k++){ alpha = .3; tick(); } alpha = 0; render(); }
+    else wake(.5);
+  };
+  svg.addEventListener("pointerup", release);
+  svg.addEventListener("pointercancel", release);
+  svg.addEventListener("pointerleave", () => { if (!dragging) focus(null); });
+
+  /* keep it honest on resize / offscreen */
+  if ("ResizeObserver" in window){
+    new ResizeObserver(() => { W = host.clientWidth; H = host.clientHeight; wake(.4); }).observe(host);
+  }
+  if ("IntersectionObserver" in window){
+    new IntersectionObserver(es => es.forEach(e => { visible = e.isIntersecting; if (visible) wake(.3); }), { threshold: .05 }).observe(host);
+  }
+
+  /* boot */
+  if (REDUCE){
+    for (let k = 0; k < 300; k++){ alpha = Math.max(.05, 1 - k / 260); tick(); }
+    alpha = 0; render();
+  } else {
+    wake(1);
+  }
+
+  const stats = document.getElementById("net-stats");
   if (stats){
-    const d = unis.filter(u => isDone(u.status)).length;
-    stats.textContent = unis.length + " nodes / " + d + " completed / " + (unis.length - d) + " in progress";
+    const c = nodes.filter(n => n.conn).length;
+    stats.textContent = nodes.length + " nodes / " + edges.length + " links / " + c + " connected / " + (nodes.length - c) + " in progress";
   }
 }
 
 (async function(){
-  buildMap(await buildPeople());
+  buildMesh(await buildPeople());
 })();
 </script>
 </body>
