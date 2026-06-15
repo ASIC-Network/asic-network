@@ -1,19 +1,20 @@
 university,status,lat,lng
-University of Minnesota,Completed,44.9740,-93.2277
-UC Berkeley,Completed,37.8719,-122.2585
-Cornell,Completed,42.4534,-76.4735
-Pune Institute of Computer Technology,Completed,18.4575,73.8508
-Olin,Completed,42.2926,-71.2640
-Georgia Tech,Completed,33.7756,-84.3963
-MIT,Completed,42.3601,-71.0942
-Iowa State University,Completed,42.0267,-93.6465
+University of Minnesota,Joined,44.9740,-93.2277
+UC Berkeley,Joined,37.8719,-122.2585
+Cornell,Joined,42.4534,-76.4735
+Pune Institute of Computer Technology,Joined,18.4575,73.8508
+Olin,Joined,42.2926,-71.2640
+Georgia Tech,Joined,33.7756,-84.3963
+MIT,Joined,42.3601,-71.0942
+Iowa State University,Joined,42.0267,-93.6465
 Stanford,In progress,37.4275,-122.1697
 University of Michigan,In progress,42.2780,-83.7382
-ETH Zurich,In progress,47.3763,8.5481
+ETH Zürich,In progress,47.3763,8.5481
 Purdue,In progress,40.4237,-86.9212
 University of Waterloo,In progress,43.4723,-80.5449
-Technical University Munich,Completed,48.1497,11.5680
-Seoul National University (SNU),In progress,37.4602,126.9529
-York (Canada),In progress,43.7735,-79.5019
-The University of British Columbia,In progress,49.2606,-123.2460
-University of Florida,Completed,29.6436,-82.3549
+TU Munich,Joined,48.1497,11.5680
+Seoul National University,In progress,37.4602,126.9529
+York University,In progress,43.7735,-79.5019
+University of Florida,Joined,29.6436,-82.3549
+University of Toronto,In progress,43.6629,-79.3957
+University of Calgary,In progress,51.0776,-114.1352
