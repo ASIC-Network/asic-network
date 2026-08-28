@@ -529,7 +529,9 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
    ============================================================ */
 const CONFIG = {
   github:  "https://github.com/ASIC-Network",
-  discord: "https://discord.gg/REPLACE-ME",   // EDIT: not linked anywhere yet; invites go out via the form
+  discord: "https://discord.gg/REPLACE-ME",
+  universitiesCSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSEe6u_V6wiWB_s7ybyFv8Z_RE4-5IRjR19GIsu5dUbLxPPdLOSMxOB12wsPwYKtcDrBExTvXZCwLeJ/pub?gid=0&single=true&output=csv",
+  peopleCSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSEe6u_V6wiWB_s7ybyFv8Z_RE4-5IRjR19GIsu5dUbLxPPdLOSMxOB12wsPwYKtcDrBExTvXZCwLeJ/pub?gid=630240970&single=true&output=csv",
 };
 
 document.querySelectorAll('[data-link="github"]').forEach(a => a.href = CONFIG.github);
@@ -602,7 +604,7 @@ async function loadCSV(url){
 
 /* ---------- people (tooltip data for the network map) ---------- */
 async function loadPeople(){
-  try{ return (await loadCSV("people.csv")).filter(p => p.name); }
+  try{ return (await loadCSV(CONFIG.peopleCSV)).filter(p => p.name); }
   catch(e){ return []; }
 }
 
@@ -613,11 +615,11 @@ async function buildMesh(people){
   const host = document.getElementById("netmesh");
   if (!host) return;
 
-  let unis;
+    let unis;
   try{
-    unis = (await loadCSV("universities.csv")).filter(u => u.university && u.lat && u.lng);
+    unis = (await loadCSV(CONFIG.universitiesCSV)).filter(u => u.university && u.lat && u.lng);
   } catch(e){
-    host.innerHTML = '<div class="net-fallback">Could not load universities.csv.</div>';
+    host.innerHTML = '<div class="net-fallback">Could not load university data.</div>';
     return;
   }
   if (!unis.length){ host.innerHTML = '<div class="net-fallback">No rows with lat/lng found.</div>'; return; }
