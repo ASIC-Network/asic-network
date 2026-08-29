@@ -1109,7 +1109,7 @@ async function buildMesh(people){
     // individually (or to label without their names overlapping) into a
     // single cluster marker. The threshold scales with the node's hit
     // radius so declustered nodes are always far enough apart to tap.
-    const CLUSTER_PX = Math.max(12, (r + 11) * 1.1);
+    const CLUSTER_PX = Math.max(6,(r + 11) * 0.55);
     const groups = clusterPoints(uniData, CLUSTER_PX);
     const clustersRender = [];
     uniData.forEach(d => { d._clustered = false; });
@@ -1248,7 +1248,7 @@ async function buildMesh(people){
 
   /* ---- pan & zoom: mouse drag, wheel, pinch, and buttons ---- */
   let dragging = false, lastX = 0, lastY = 0;
-  const MIN_ZOOM = 0.6, MAX_ZOOM = 60;
+  const MIN_ZOOM = 0.6, MAX_ZOOM = 120;
 
   function zoomAt(cx, cy, factor){
     closeClusterTip();
