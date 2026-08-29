@@ -164,10 +164,23 @@ h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.05;letter-
 #netmesh .uni-node .lbl{font-family:var(--mono);letter-spacing:.04em;fill:var(--muted);text-anchor:middle;pointer-events:none;dominant-baseline:hanging;opacity:0;transition:opacity .25s ease}
 #netmesh .uni-node.show-lbl .lbl{opacity:1}
 #netmesh .uni-node:hover .lbl,#netmesh .uni-node.active .lbl{fill:var(--ink);font-weight:600;opacity:1}
+#netmesh .uni-cluster{cursor:pointer}
+#netmesh .uni-cluster .cring{fill:var(--navy);stroke:#fff;stroke-width:2;transition:r .12s ease,stroke-width .12s ease}
+#netmesh .uni-cluster:hover .cring{stroke-width:3}
+#netmesh .uni-cluster .ctxt{fill:#fff;font-family:var(--mono);font-weight:700;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 .net-tooltip{position:absolute;pointer-events:none;z-index:10;background:rgba(255,255,255,.96);backdrop-filter:blur(5px);border:1px solid var(--line);border-radius:10px;padding:11px 14px;box-shadow:0 14px 34px -18px rgba(3,65,138,.45);display:none;max-width:240px}
 .net-tooltip.show{display:block}
+.net-tooltip.interactive{pointer-events:auto;max-width:260px}
 .net-tooltip .nm{font-weight:700;font-size:.88rem;color:var(--ink);margin-bottom:5px}
 .net-tooltip .prow{font-size:.74rem;color:var(--muted);margin-top:6px;line-height:1.5}
+.net-tooltip .clist{display:flex;flex-direction:column;gap:1px;max-height:220px;overflow-y:auto;margin-top:4px}
+.net-tooltip .citem{display:flex;align-items:center;gap:8px;text-align:left;background:none;border:none;padding:7px 5px;font-family:var(--font);font-size:.8rem;color:var(--text);cursor:pointer;border-radius:6px;width:100%}
+.net-tooltip .citem:hover{background:var(--soft);color:var(--navy)}
+.net-tooltip .citem .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.net-tooltip .citem .dot.conn{background:var(--navy)}
+.net-tooltip .citem .dot.prog{background:#fff;box-shadow:inset 0 0 0 2px var(--blue)}
+.net-tooltip .cback{display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:0 0 9px;font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);cursor:pointer}
+.net-tooltip .cback:hover{text-decoration:underline}
 .net-fallback{display:flex;align-items:center;justify-content:center;height:100%;padding:28px;text-align:center;font-family:var(--mono);font-size:.76rem;line-height:1.7;color:var(--muted)}
 .pill{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
 .pill.conn{background:var(--soft);color:var(--navy);border:1px solid var(--trace)}
@@ -177,6 +190,7 @@ h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.05;letter-
 .net-legend i{width:10px;height:10px;border-radius:50%;flex:none}
 .net-legend i.conn{background:var(--navy)}
 .net-legend i.prog{background:#fff;box-shadow:inset 0 0 0 2px var(--blue),0 0 0 0px transparent}
+.net-legend i.clus{width:13px;height:13px;background:var(--navy);border:2px solid #fff;box-shadow:0 0 0 1px var(--trace)}
 .net-legend i.link{width:22px;height:2px;border-radius:1px;background:var(--trace)}
 
 /* ---------- tutorials ---------- */
@@ -387,7 +401,7 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
       <div class="marker"><span class="num">02</span><span class="txt">Topology</span><span class="rule"></span></div>
       <h2>Connected universities</h2>
       <p class="lede">Every university is pinned to its real location on the globe. <b>Filled nodes</b> are joined; hollow ones are in progress. Lines connect joined universities to show the network.</p>
-      <p class="lede">Click any node to see details. The map reads straight from <b>universities.csv</b>: add a row with lat/lng, push, and a new pin appears.</p>
+      <p class="lede">Click any node to see details. When universities sit too close together to tell apart, they group into a single numbered marker — click it to pick one from the list. The map reads straight from <b>universities.csv</b>: add a row with lat/lng, push, and a new pin appears.</p>
       <div class="net-card">
         <div class="bar"><span class="dot"></span><span class="lbl" id="net-stats">Loading network stats...</span></div>
         <div id="netmesh" aria-label="Interactive mesh of universities in the ASIC Network">
@@ -401,6 +415,7 @@ footer .cr{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:va
           <span><i class="conn"></i>Joined</span>
           <span><i class="prog"></i>In progress</span>
           <span><i class="link"></i>Connection</span>
+          <span><i class="clus"></i>Multiple here — click to list</span>
         </div>
       </div>
     </div>
@@ -876,7 +891,57 @@ async function buildMesh(people){
   const nodesG = document.createElementNS(NS, "g");
   svg.appendChild(nodesG);
   let activeNode = null;
+  let activeCluster = null;
   const isTouch = matchMedia("(pointer: coarse)").matches;
+
+  // Universities whose screen positions land within `threshold` px of each
+  // other get grouped into one clickable cluster instead of overlapping,
+  // unclickable dots. Grouping is transitive (connected components), not
+  // just nearest-pair, so a tight row of 5 schools becomes one cluster
+  // rather than 2-3 overlapping pairs.
+  function clusterPoints(data, threshold){
+    const n = data.length;
+    const parent = Array.from({ length: n }, (_, i) => i);
+    function find(x){ while (parent[x] !== x){ parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+    function union(a, b){ const ra = find(a), rb = find(b); if (ra !== rb) parent[ra] = rb; }
+    const t2 = threshold * threshold;
+    for (let i = 0; i < n; i++){
+      for (let j = i + 1; j < n; j++){
+        const dx = data[i]._sx - data[j]._sx, dy = data[i]._sy - data[j]._sy;
+        if (dx * dx + dy * dy < t2) union(i, j);
+      }
+    }
+    const groups = new Map();
+    for (let i = 0; i < n; i++){
+      const root = find(i);
+      if (!groups.has(root)) groups.set(root, []);
+      groups.get(root).push(i);
+    }
+    return [...groups.values()];
+  }
+
+  // Reusable pool of cluster-marker DOM elements so we don't recreate SVG
+  // nodes on every pan/zoom frame.
+  const clusterPool = [];
+  function getClusterEntry(i){
+    if (clusterPool[i]) return clusterPool[i];
+    const grp = document.createElementNS(NS, "g");
+    grp.setAttribute("class", "uni-cluster");
+    const hit = document.createElementNS(NS, "circle");
+    hit.setAttribute("class", "chit"); hit.setAttribute("fill", "transparent");
+    const circle = document.createElementNS(NS, "circle");
+    circle.setAttribute("class", "cring");
+    const text = document.createElementNS(NS, "text");
+    text.setAttribute("class", "ctxt");
+    grp.appendChild(hit); grp.appendChild(circle); grp.appendChild(text);
+    nodesG.appendChild(grp);
+    const entry = { grp, hit, circle, text, bound: false, data: null };
+    clusterPool[i] = entry;
+    return entry;
+  }
+  function closeClusterTip(){
+    if (activeCluster){ activeCluster = null; tip.classList.remove("show"); tip.classList.remove("interactive"); }
+  }
 
   uniData.forEach(d => {
     const grp = document.createElementNS(NS, "g");
@@ -925,35 +990,90 @@ async function buildMesh(people){
   });
 
   /* ---- tooltip ---- */
+  // Clamp a proposed tip position to the host box using the tooltip's real
+  // measured size, rather than a guessed width/height — this is what keeps
+  // the popup fully on-screen (including near edges on mobile when zoomed
+  // in), instead of only shifting it by a fixed guessed amount.
+  function clampToHost(x, y, tw, th){
+    const pad = 8;
+    const maxX = Math.max(pad, host.clientWidth - tw - pad);
+    const maxY = Math.max(pad, host.clientHeight - th - pad);
+    return [Math.min(Math.max(x, pad), maxX), Math.min(Math.max(y, pad), maxY)];
+  }
   function showTip(d, ev){
+    tip.classList.remove("interactive");
     tip.innerHTML = '<div class="nm">' + esc(d.u.university) + '</div>'
       + '<span class="pill ' + (d.conn?"conn":"prog") + '">' + esc(d.u.status||"Unknown") + '</span>'
       + (d.ppl.length ? '<div class="prow"><b>People:</b> ' + esc(d.ppl.join(", ")) + '</div>' : '');
     tip.classList.add("show");
-    if (isTouch) positionTipNear(d); else moveTip(ev);
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    if (isTouch) positionTipNear(d, tw, th); else moveTip(ev, tw, th);
   }
   function hideTip(){ if (!activeNode) tip.classList.remove("show"); }
-  function moveTip(ev){
+  function moveTip(ev, tw, th){
+    tw = tw || tip.offsetWidth; th = th || tip.offsetHeight;
     const r = host.getBoundingClientRect();
     let x = ev.clientX - r.left + 14, y = ev.clientY - r.top - 10;
-    if (x + 250 > host.clientWidth)  x -= 265;
-    if (y + 130 > host.clientHeight) y -= 135;
+    [x, y] = clampToHost(x, y, tw, th);
     tip.style.left = x+"px"; tip.style.top = y+"px";
   }
-  function positionTipNear(d){
+  function positionTipNear(d, tw, th){
     // anchor the tooltip near the node's current screen position, works without a pointer event
-    let x = d._sx + 16, y = d._sy - 10;
-    if (x + 250 > host.clientWidth)  x = d._sx - 266;
-    if (y + 130 > host.clientHeight) y = d._sy - 135;
+    tw = tw || tip.offsetWidth; th = th || tip.offsetHeight;
+    let x = d._sx + 16, y = d._sy - th - 10;
     if (y < 4) y = d._sy + 20;
+    [x, y] = clampToHost(x, y, tw, th);
     tip.style.left = x+"px"; tip.style.top = y+"px";
   }
+
+  /* ---- cluster tooltip: a pickable list, so every university stays
+     individually reachable no matter how tightly packed the dots are ---- */
+  function positionClusterTip(c, tw, th){
+    let x = c.x + 16, y = c.y - th - 10;
+    if (y < 4) y = c.y + 20;
+    [x, y] = clampToHost(x, y, tw, th);
+    tip.style.left = x+"px"; tip.style.top = y+"px";
+  }
+  function renderClusterList(c){
+    let html = '<div class="nm">' + c.count + ' universities here</div><div class="clist">';
+    c.members.forEach((d, i) => {
+      html += '<button type="button" class="citem" data-i="' + i + '">'
+        + '<span class="dot ' + (d.conn ? "conn" : "prog") + '"></span>'
+        + esc(d.u.university) + '</button>';
+    });
+    html += '</div>';
+    tip.innerHTML = html;
+    tip.querySelectorAll(".citem").forEach(btn => {
+      btn.addEventListener("click", ev => {
+        ev.stopPropagation();
+        renderClusterMember(c, +btn.dataset.i);
+      });
+    });
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    positionClusterTip(c, tw, th);
+  }
+  function renderClusterMember(c, i){
+    const d = c.members[i];
+    tip.innerHTML = '<button type="button" class="cback">&larr; ' + c.count + ' universities</button>'
+      + '<div class="nm">' + esc(d.u.university) + '</div>'
+      + '<span class="pill ' + (d.conn?"conn":"prog") + '">' + esc(d.u.status||"Unknown") + '</span>'
+      + (d.ppl.length ? '<div class="prow"><b>People:</b> ' + esc(d.ppl.join(", ")) + '</div>' : '');
+    tip.querySelector(".cback").addEventListener("click", ev => {
+      ev.stopPropagation();
+      renderClusterList(c);
+    });
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    positionClusterTip(c, tw, th);
+  }
+
   svg.addEventListener("click", () => {
     if (activeNode){ activeNode.classList.remove("active"); activeNode = null; }
+    activeCluster = null;
     tip.classList.remove("show");
+    tip.classList.remove("interactive");
   });
   if (!isTouch) {
-    svg.addEventListener("mousemove", ev => { if (tip.classList.contains("show") && !activeNode) moveTip(ev); });
+    svg.addEventListener("mousemove", ev => { if (tip.classList.contains("show") && !activeNode && !activeCluster) moveTip(ev); });
   }
 
   /* ---- apply transform ---- */
@@ -979,10 +1099,31 @@ async function buildMesh(people){
     ));
     const showLabels = lblOpacity > 0.01;
 
-    // Compute screen positions
+    // Screen positions for every university, regardless of cluster state
     uniData.forEach(d => {
       d._sx = tx + d.x * s;
       d._sy = ty + d.y * s;
+    });
+
+    // Group universities that are too close together on screen to click
+    // individually (or to label without their names overlapping) into a
+    // single cluster marker. The threshold scales with the node's hit
+    // radius so declustered nodes are always far enough apart to tap.
+    const CLUSTER_PX = Math.max(22, (r + 11) * 2);
+    const groups = clusterPoints(uniData, CLUSTER_PX);
+    const clustersRender = [];
+    uniData.forEach(d => { d._clustered = false; });
+    groups.forEach(idxs => {
+      if (idxs.length === 1) return;
+      let cx = 0, cy = 0;
+      idxs.forEach(i => { cx += uniData[i]._sx; cy += uniData[i]._sy; uniData[i]._clustered = true; });
+      clustersRender.push({ x: cx / idxs.length, y: cy / idxs.length, count: idxs.length, members: idxs.map(i => uniData[i]) });
+    });
+
+    // Singleton nodes: normal circle, sized and positioned as before
+    uniData.forEach(d => {
+      d._el.style.display = d._clustered ? "none" : "";
+      if (d._clustered) return;
       d._el.setAttribute("transform", `translate(${d._sx.toFixed(2)},${d._sy.toFixed(2)})`);
       d._circle.setAttribute("r", r.toFixed(2));
       d._hit.setAttribute("r", (r + 11).toFixed(2));
@@ -991,13 +1132,65 @@ async function buildMesh(people){
       d._lbl.setAttribute("x", "0");
     });
 
-    if (isTouch && activeNode) {
-      const activeData = uniData.find(d => d._el === activeNode);
-      if (activeData) positionTipNear(activeData);
+    // Cluster markers: a bigger dot with a count, drawn from a reusable pool
+    clustersRender.forEach((c, i) => {
+      const entry = getClusterEntry(i);
+      entry.data = c;
+      const cr = Math.min(24, r + 3 + Math.sqrt(c.count) * 2.2);
+      entry.grp.style.display = "";
+      entry.grp.setAttribute("transform", `translate(${c.x.toFixed(2)},${c.y.toFixed(2)})`);
+      entry.circle.setAttribute("r", cr.toFixed(2));
+      entry.hit.setAttribute("r", (cr + 10).toFixed(2));
+      const tfs = Math.max(9, Math.min(13, cr * 0.62));
+      entry.text.setAttribute("font-size", tfs.toFixed(1) + "px");
+      entry.text.setAttribute("y", (tfs * 0.36).toFixed(1));
+      entry.text.textContent = c.count;
+      if (!entry.bound){
+        entry.bound = true;
+        entry.grp.addEventListener("click", ev => {
+          ev.stopPropagation();
+          if (activeNode){ activeNode.classList.remove("active"); activeNode = null; }
+          if (activeCluster === entry){ closeClusterTip(); return; }
+          activeCluster = entry;
+          tip.classList.add("interactive");
+          tip.classList.add("show");
+          renderClusterList(entry.data);
+        });
+        if (!isTouch){
+          entry.grp.addEventListener("mouseenter", () => {
+            if (activeCluster) return;
+            tip.classList.remove("interactive");
+            tip.innerHTML = '<div class="nm">' + entry.data.count + ' universities</div>'
+              + '<div class="prow">Click to see and pick one</div>';
+            tip.classList.add("show");
+            positionClusterTip(entry.data, tip.offsetWidth, tip.offsetHeight);
+          });
+          entry.grp.addEventListener("mouseleave", () => { if (!activeCluster) tip.classList.remove("show"); });
+        }
+      }
+    });
+    for (let i = clustersRender.length; i < clusterPool.length; i++){
+      clusterPool[i].grp.style.display = "none";
     }
 
+    // Keep an open single-node tooltip glued to its node while panning/
+    // zooming; if that node just became part of a cluster, close it instead
+    // of leaving a stale popup pointing at a now-hidden dot.
+    if (activeNode) {
+      const activeData = uniData.find(d => d._el === activeNode);
+      if (!activeData || activeData._clustered) {
+        activeNode.classList.remove("active");
+        activeNode = null;
+        tip.classList.remove("show");
+      } else if (isTouch) {
+        positionTipNear(activeData, tip.offsetWidth, tip.offsetHeight);
+      }
+    }
+
+    const visible = uniData.filter(d => !d._clustered);
+
     if (!showLabels) {
-      uniData.forEach(d => {
+      visible.forEach(d => {
         d._lbl.style.opacity = 0;
         d._el.classList.remove("show-lbl");
       });
@@ -1006,23 +1199,23 @@ async function buildMesh(people){
 
     // Proximity culling: estimate each label's half-width, then suppress a label
     // if its text box would overlap a *closer* neighbour's text box or dot.
-    const charW = fontSize * 0.58;
+    const charW = fontSize * 0.6;
     const lh = fontSize + 4;
 
-    uniData.forEach(d => {
+    visible.forEach(d => {
       d._lw = d.u.university.length * charW; // estimated label pixel width
       d._visible = true;
     });
 
     // Sort by "importance": joined first, then by name length (shorter = more important)
-    const sorted = [...uniData].sort((a, b) => {
+    const sorted = [...visible].sort((a, b) => {
       if (a.conn !== b.conn) return a.conn ? -1 : 1;
       return a.u.university.length - b.u.university.length;
     });
 
     // Greedy: claim space for each label in priority order; hide if it collides
     const claimed = []; // {x, y, w, h} rects already placed
-    const PAD = 6;
+    const PAD = 7;
 
     sorted.forEach(d => {
       if (!d._visible) return;
@@ -1045,7 +1238,7 @@ async function buildMesh(people){
       }
     });
 
-    uniData.forEach(d => {
+    visible.forEach(d => {
       const op = d._visible ? lblOpacity : 0;
       d._lbl.style.opacity = op;
       if (d._visible) d._el.classList.add("show-lbl");
@@ -1058,6 +1251,7 @@ async function buildMesh(people){
   const MIN_ZOOM = 0.6, MAX_ZOOM = 20;
 
   function zoomAt(cx, cy, factor){
+    closeClusterTip();
     offX = cx + (offX - cx) * factor;
     offY = cy + (offY - cy) * factor;
     zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * factor));
@@ -1084,7 +1278,8 @@ async function buildMesh(people){
 
   // mouse drag panning
   svg.addEventListener("pointerdown", ev => {
-    if (ev.target.closest(".uni-node")) return;
+    if (ev.target.closest(".uni-node") || ev.target.closest(".uni-cluster")) return;
+    closeClusterTip();
     if (ev.pointerType === "touch") return; // touch handled separately below for pinch support
     dragging = true; lastX = ev.clientX; lastY = ev.clientY;
     host.classList.add("panning"); svg.setPointerCapture(ev.pointerId);
@@ -1103,6 +1298,7 @@ async function buildMesh(people){
   let pinchStartDist = null, pinchStartZoom = 1;
 
   svg.addEventListener("touchstart", ev => {
+    if (!(ev.target.closest(".uni-node") || ev.target.closest(".uni-cluster"))) closeClusterTip();
     for (const t of ev.changedTouches) touches.set(t.identifier, { x: t.clientX, y: t.clientY });
     if (touches.size === 1) {
       const t = [...touches.values()][0];
@@ -1116,7 +1312,7 @@ async function buildMesh(people){
   }, { passive: true });
 
   svg.addEventListener("touchmove", ev => {
-    if (ev.target.closest(".uni-node") && touches.size <= 1) return;
+    if ((ev.target.closest(".uni-node") || ev.target.closest(".uni-cluster")) && touches.size <= 1) return;
     ev.preventDefault();
     for (const t of ev.changedTouches) touches.set(t.identifier, { x: t.clientX, y: t.clientY });
     if (touches.size === 1 && dragging) {
@@ -1154,7 +1350,7 @@ async function buildMesh(people){
   if (zoomOutBtn) zoomOutBtn.addEventListener("click", () => zoomAtCenter(1/1.4));
   if (resetBtn) resetBtn.addEventListener("click", resetView);
 
-  if ("ResizeObserver" in window) new ResizeObserver(applyTransform).observe(host);
+  if ("ResizeObserver" in window) new ResizeObserver(() => { closeClusterTip(); applyTransform(); }).observe(host);
   applyTransform();
 
   /* ---- country count (point-in-polygon against the embedded GeoJSON, no hardcoding) ---- */
