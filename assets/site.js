@@ -1,7 +1,8 @@
 /* =====================================================================
-   Page UI, the same as the Stone Arch Silicon site: year, header, menu,
-   progress, reveal, motion preference. Each feature checks that its
-   elements exist before it runs. The network map lives in index.html.
+   Page UI: year, header, menu, progress, reveal, motion preference, the
+   decoding headline, and the live numbers in the hero. Started from the
+   Stone Arch Silicon site's script. Each feature checks that its elements
+   exist before it runs. The network map lives in index.html.
    ===================================================================== */
 (function(){
   'use strict';
@@ -63,26 +64,56 @@
     document.addEventListener('visibilitychange', () => { if (!document.hidden && Motion.on) syncVideo(true); });
   }
 
-  /* ---------- rolling word in the headline ---------- */
-  const roller = $('#roller');
-  if (roller){
-    const items = roller.children.length;          // last item duplicates the first
-    let i = 0, timer = null;
-    const hold = idx => (idx === 0 ? 3600 : 1500);
-    function step(){
-      i++;
-      roller.classList.remove('no-anim');
-      roller.style.transform = 'translateY(' + (-i * (100 / items)) + '%)';
-      if (i === items - 1){
-        // landed on the duplicate of the first word: snap back without animation
-        setTimeout(() => { roller.classList.add('no-anim'); i = 0; roller.style.transform = 'translateY(0)'; }, 900);
-      }
-      timer = setTimeout(step, hold(i === items - 1 ? 0 : i) + 850);
+  /* ---------- decoding word in the headline ----------
+     Cycles through data-words, scrambling each change like a signal locking on. */
+  const dec = $('#decode');
+  if (dec){
+    let words = [];
+    try { words = JSON.parse(dec.dataset.words || '[]'); } catch(e){}
+    if (!words.length) words = [dec.textContent];
+    const GLYPHS = 'abcdefghijklnopqrstuvxyz0123456789#+/<>=';   // no wide glyphs, so the line barely jitters
+    let idx = 0, timer = null, raf = 0;
+    function scramble(to){
+      const from = dec.textContent, len = Math.max(from.length, to.length), t0 = performance.now(), DUR = 820;
+      cancelAnimationFrame(raf);
+      const step = now => {
+        const p = Math.min(1, (now - t0) / DUR);
+        let out = '';
+        for (let k = 0; k < len; k++){
+          const target = to[k] || '';
+          if (p >= 0.2 + 0.7 * (k / len)) out += target;            // settles left to right
+          else out += target === ' ' ? ' ' : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+        }
+        dec.textContent = out;
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
     }
-    function start(){ if (!timer) timer = setTimeout(step, hold(0)); }
-    function stop(){ clearTimeout(timer); timer = null; roller.classList.add('no-anim'); i = 0; roller.style.transform = 'translateY(0)'; }
+    function next(){
+      idx = (idx + 1) % words.length;
+      scramble(words[idx]);
+      timer = setTimeout(next, idx === 0 ? 4200 : 2800);
+    }
+    function start(){ if (!timer && words.length > 1) timer = setTimeout(next, 3600); }
+    function stop(){ clearTimeout(timer); timer = null; cancelAnimationFrame(raf); idx = 0; dec.textContent = words[0]; }
     Motion.subscribe(on => on ? start() : stop());
   }
+
+  /* ---------- live numbers in the hero, filled in by the map script ---------- */
+  window.ASICNet.setStats = stats => {
+    Object.keys(stats).forEach(k => {
+      const el = $('[data-stat="' + k + '"]'), v = stats[k];
+      if (!el) return;
+      const show = n => { el.textContent = String(n).padStart(2, '0'); };
+      if (!Motion.on){ show(v); return; }
+      const t0 = performance.now(), D = 1400;
+      (function tick(now){
+        const p = Math.min(1, Math.max(0, (now - t0) / D));
+        show(Math.round(v * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    });
+  };
 
   const header = $('#siteHeader');
 
@@ -101,7 +132,8 @@
       let theme = 'dark', inHeroTop = false;
       for (const s of themed){
         const r = s.getBoundingClientRect();
-        if (r.top <= probe && r.bottom > probe){ theme = s.dataset.nav; inHeroTop = s.id === 'top' && y < 40; break; }
+        // no break: a dark panel nested in a light section comes later in the page, so the innermost match wins
+        if (r.top <= probe && r.bottom > probe){ theme = s.dataset.nav; inHeroTop = s.id === 'top' && y < 40; }
       }
       nav.classList.toggle('on-dark', theme === 'dark' && !inHeroTop);
       nav.classList.toggle('on-light', theme === 'light');
@@ -163,7 +195,8 @@
     const start = innerHeight * 0.9, end = innerHeight * 0.35;
     const p = Math.min(1, Math.max(0, (start - r.top) / (start - end + r.height * 0.6)));
     const n = Math.round(p * words.length);
-    words.forEach((w, k) => w.classList.toggle('on', k < n));
+    // the newest lit word is the signal head, in blue
+    words.forEach((w, k) => { w.classList.toggle('on', k < n); w.classList.toggle('head', k === n - 1 && n < words.length); });
   }
 
   /* ---------- reveal ---------- */
