@@ -37,11 +37,11 @@
 }
 </script>
 
-<meta name="theme-color" content="#060607" />
+<meta name="theme-color" content="#05070c" />
 <link rel="icon" type="image/png" href="assets/logo-256.png" />
-<!-- Fonts: Geist + Geist Mono (SIL OFL 1.1, see assets/Geist-OFL.txt), self-hosted -->
-<link rel="preload" href="assets/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="assets/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin />
+<!-- Fonts: Archivo and IBM Plex Mono (SIL OFL 1.1, see assets/*-OFL.txt), self-hosted -->
+<link rel="preload" href="assets/Archivo-Variable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="assets/site.css" />
 <script>document.documentElement.className = 'js';</script>
 </head>
@@ -50,21 +50,22 @@
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 
-<!-- HEADER -->
+<!-- HEADER: a floating capsule -->
 <header class="site-header" id="siteHeader">
   <nav class="nav" id="nav" aria-label="Main navigation">
     <a class="brand" href="#top" aria-label="The ASIC Network, back to top">
-      <img src="assets/logo-256.png" alt="" width="30" height="30" />
-      <span class="brand-name">The ASIC Network</span>
-      <span class="brand-tag">University chip design clubs</span>
+      <img src="assets/logo-256.png" alt="" width="32" height="32" />
+      <span class="brand-name">ASIC Network</span>
     </a>
-    <div class="nav-actions">
+    <div class="nav-links">
       <a class="nav-link" href="#about">About</a>
       <a class="nav-link" href="#network">Network</a>
       <a class="nav-link" href="#tutorials">Tutorials</a>
       <a class="nav-link" href="#sponsors">Sponsors</a>
       <a class="nav-link" data-link="github" href="https://github.com/ASIC-Network" target="_blank" rel="noopener">GitHub
         <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M4 2h6v6" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></a>
+    </div>
+    <div class="nav-actions">
       <a class="nav-cta" href="#join">Register<span class="cta-long">&nbsp;your club</span></a>
       <button class="nav-menu" id="menuToggle" type="button" aria-label="Open menu" aria-controls="menu" aria-expanded="false"><span></span></button>
     </div>
@@ -75,8 +76,8 @@
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Site menu">
   <div class="menu-top">
     <a class="brand" href="#top" data-close>
-      <img src="assets/logo-256.png" alt="" width="30" height="30" />
-      <span class="brand-name">The ASIC Network</span>
+      <img src="assets/logo-256.png" alt="" width="32" height="32" />
+      <span class="brand-name">ASIC Network</span>
     </a>
     <button class="menu-close" id="menuClose" type="button" aria-label="Close menu">
       <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
@@ -84,11 +85,11 @@
   </div>
   <div class="menu-body">
     <ul class="menu-main">
-      <li><a href="#about" data-close><span class="idx">/01</span>About</a></li>
-      <li><a href="#network" data-close><span class="idx">/02</span>Network</a></li>
-      <li><a href="#tutorials" data-close><span class="idx">/03</span>Tutorials</a></li>
-      <li><a href="#sponsors" data-close><span class="idx">/04</span>Sponsors</a></li>
-      <li><a href="#join" data-close><span class="idx">/05</span>Register</a></li>
+      <li><a href="#about" data-close><span class="idx">01</span>About</a></li>
+      <li><a href="#network" data-close><span class="idx">02</span>Network</a></li>
+      <li><a href="#tutorials" data-close><span class="idx">03</span>Tutorials</a></li>
+      <li><a href="#sponsors" data-close><span class="idx">04</span>Sponsors</a></li>
+      <li><a href="#join" data-close><span class="idx">05</span>Register</a></li>
     </ul>
     <div class="menu-side">
       <div>
@@ -109,7 +110,7 @@
 
 <main id="main">
 
-<!-- HERO: the wafer film is shared with the Stone Arch Silicon site -->
+<!-- HERO: the globe film shows the real network (see README for re-rendering it) -->
 <section class="hero theme-dark" id="top" data-nav="dark">
   <div class="hero-media" aria-hidden="true">
     <video class="hero-video" id="heroVideo" muted loop playsinline preload="none" disablepictureinpicture>
@@ -118,30 +119,33 @@
       <source src="assets/hero-720.webm" type='video/webm; codecs="vp9"' />
     </video>
     <div class="hero-shade"></div>
-    <div class="grain"></div>
+    <div class="hero-grid"></div>
   </div>
 
   <div class="wrap hero-inner">
-    <p class="eyebrow">The ASIC Network · University ASIC &amp; VLSI clubs</p>
+    <p class="tag"><span class="node" aria-hidden="true"></span>University ASIC &amp; VLSI clubs</p>
     <h1 class="hero-title">
       <span class="sr-only">From every campus to one network.</span>
       <span class="ht-line" aria-hidden="true">From every campus</span>
-      <span class="ht-line" aria-hidden="true">to <span class="roller"><span class="roller-track" id="roller"><span>one network.</span><span>open docs.</span><span>open tutorials.</span><span>real silicon.</span><span>one network.</span></span></span></span>
+      <span class="ht-line" aria-hidden="true">to <span class="decode" id="decode" data-words='["one network.","open docs.","open tutorials.","real silicon."]'>one network.</span><span class="caret"></span></span>
     </h1>
-    <div class="hero-row">
-      <p class="hero-lead">A network of university clubs teaching students to design real computer chips, together. Open documentation, shared progress, and a growing list of clubs across the world.</p>
-      <div class="hero-cta">
-        <a class="btn btn-solid" href="#join">Register your club
-          <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></a>
-        <a class="btn btn-line" href="#network">See the network
-          <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></a>
-      </div>
+    <p class="hero-lead">A network of university clubs teaching students to design real computer chips, together. Open documentation, shared progress, and a growing list of clubs across the world.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#join">Register your club
+        <i class="btn-ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></i></a>
+      <a class="btn btn-ghost" href="#network">Explore the map
+        <i class="btn-ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></i></a>
     </div>
-    <div class="hero-specs">
-      <!-- the first spec is filled in from the map data once it loads -->
-      <a class="spec" href="#network"><b id="statUnis">Worldwide</b><span id="statWhere">Clubs on the map</span></a>
-      <a class="spec" href="#tutorials"><b>Analog + digital</b><span>Free, open tutorials</span></a>
-      <a class="spec" data-link="github" href="https://github.com/ASIC-Network" target="_blank" rel="noopener"><b>Open on GitHub <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M4 2h6v6" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></b><span>Docs, flows, and repos</span></a>
+
+    <!-- live numbers: filled in from the map data once it loads -->
+    <div class="telemetry">
+      <span class="tm-live"><span class="node" aria-hidden="true"></span>Live from the network</span>
+      <dl class="tm-grid">
+        <div class="tm"><dt>Universities joined</dt><dd data-stat="joined">--</dd></div>
+        <div class="tm"><dt>Countries</dt><dd data-stat="countries">--</dd></div>
+        <div class="tm"><dt>Continents</dt><dd data-stat="continents">--</dd></div>
+        <div class="tm"><dt>Joining now</dt><dd data-stat="progress">--</dd></div>
+      </dl>
       <button class="motion-btn" id="motionBtn" type="button" aria-pressed="false">
         <i aria-hidden="true">
           <svg class="ic-pause" viewBox="0 0 8 8"><path d="M1.5 0v8M6.5 0v8" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -156,14 +160,26 @@
 <!-- ABOUT -->
 <section class="sec theme-light" id="about" data-nav="light">
   <div class="wrap">
-    <p class="eyebrow reveal">What it is</p>
-    <p class="statement-text" id="statement">Chip design is hard to break into and easy to do alone. We make it a team <span class="nowrap">sport<span class="dot" aria-hidden="true"></span></span></p>
+    <p class="tag reveal"><span class="ix">01</span>What it is</p>
+    <p class="statement-text" id="statement">Chip design is hard to break into and easy to do alone. We make it a team <span class="nowrap">sport<span class="accent">.</span></span></p>
 
-    <div class="pillars">
-      <article class="pillar reveal"><span class="idx">/0.1</span><h3>Documentation</h3><p>Open, shared docs. Tooling notes, design flows, and guides any member club can use and contribute to.</p></article>
-      <article class="pillar reveal" data-d="1"><span class="idx">/0.2</span><h3>Biweekly updates</h3><p>Every two weeks clubs share progress and blockers. A simple rhythm to keep things moving and learn from each other.</p></article>
-      <article class="pillar reveal" data-d="2"><span class="idx">/0.3</span><h3>Open on GitHub</h3><p>Everything lives in the open. Fork the repos, file issues, send pull requests.</p></article>
-      <article class="pillar reveal" data-d="3"><span class="idx">/0.4</span><h3>Community</h3><p>A shared Discord where clubs talk day to day. Register your club to get an invite.</p></article>
+    <div class="cards4">
+      <article class="card reveal">
+        <div class="card-top"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.5h8l4.5 4.5v14.5H6z"/><path d="M14 2.5V7h4.5"/><path d="M9 11.5h6.5M9 15h6.5M9 18.5h4"/></svg></span><span class="idx">01</span></div>
+        <h3>Documentation</h3><p>Open, shared docs. Tooling notes, design flows, and guides any member club can use and contribute to.</p>
+      </article>
+      <article class="card reveal" data-d="1">
+        <div class="card-top"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-14.2 5"/><path d="M4 12a8 8 0 0 1 14.2-5"/><path d="M18.5 3v4.2h-4.2M5.5 21v-4.2h4.2"/></svg></span><span class="idx">02</span></div>
+        <h3>Biweekly updates</h3><p>Every two weeks clubs share progress and blockers. A simple rhythm to keep things moving and learn from each other.</p>
+      </article>
+      <article class="card reveal" data-d="2">
+        <div class="card-top"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="5" r="2.2"/><circle cx="6.5" cy="19" r="2.2"/><circle cx="17.5" cy="7.5" r="2.2"/><path d="M6.5 7.2v9.6M17.5 9.7c0 4.6-5.4 4.4-9.3 7.6"/></svg></span><span class="idx">03</span></div>
+        <h3>Open on GitHub</h3><p>Everything lives in the open. Fork the repos, file issues, send pull requests.</p>
+      </article>
+      <article class="card reveal" data-d="3">
+        <div class="card-top"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H10l-6 4.5z"/><path d="M8 9.2h8M8 12.4h5"/></svg></span><span class="idx">04</span></div>
+        <h3>Community</h3><p>A shared Discord where clubs talk day to day. Register your club to get an invite.</p>
+      </article>
     </div>
 
     <div class="about-foot reveal">
@@ -175,9 +191,10 @@
 
 <!-- NETWORK MAP (data and behaviour are in the script at the bottom) -->
 <section class="sec theme-dark" id="network" data-nav="dark">
+  <div class="sec-grid" aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal">Topology</p>
+      <p class="tag reveal"><span class="ix">02</span>Topology</p>
       <h2 class="h2 reveal">Connected universities.</h2>
       <p class="lead reveal" data-d="1">Every university is pinned to its real location. Filled nodes have joined; hollow ones are in progress. Drag to pan, scroll or pinch to zoom, and click a node for details. Universities too close to tell apart group into one numbered marker.</p>
     </div>
@@ -204,13 +221,49 @@
 <section class="sec theme-paper" id="tutorials" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal">Learn</p>
+      <p class="tag reveal"><span class="ix">03</span>Learn</p>
       <h2 class="h2 reveal">Two tracks. <span class="nowrap">Free for anyone.</span></h2>
       <p class="lead reveal" data-d="1">Both written by the network. Start at the first page and work forward: no prior tool experience assumed. Everything lives on GitHub with the rest of our docs, so if something is wrong or missing, open an issue or send a pull request.</p>
     </div>
-    <div class="paths">
-      <a class="path reveal" href="https://asic-network.github.io/analog-tutorials/" target="_blank" rel="noopener"><span class="idx"><span>Track</span><span>/01</span></span><h3>Analog</h3><p>Schematic capture, device sizing, simulation, and layout. The path from a single transistor to a working analog block.</p><span class="link">Open the analog tutorials ↗</span></a>
-      <a class="path reveal" data-d="1" href="https://asic-network.github.io/digital-tutorials/" target="_blank" rel="noopener"><span class="idx"><span>Track</span><span>/02</span></span><h3>Digital</h3><p>RTL, synthesis, place and route, and signoff. The path from Verilog you have written to a layout you can hand off.</p><span class="link">Open the digital tutorials ↗</span></a>
+    <div class="tracks">
+      <a class="track reveal" href="https://asic-network.github.io/analog-tutorials/" target="_blank" rel="noopener">
+        <!-- an inverting op-amp stage -->
+        <svg class="track-art" viewBox="0 0 260 170" aria-hidden="true">
+          <path d="M112 46v78l70-39z"/>
+          <path d="M120 66h10M125 61v10M120 104h10"/>
+          <path d="M14 66h22l4-7 7 14 7-14 7 14 7-14 7 14 4-7h32"/>
+          <path d="M112 104H86v18M78 122h16M81 127h10M84 132h4"/>
+          <path d="M182 85h62"/>
+          <path d="M98 66V24h32l4-7 7 14 7-14 7 14 7-14 7 14 4-7h32v61"/>
+          <circle class="fill" cx="98" cy="66" r="3"/><circle class="fill" cx="211" cy="85" r="3"/>
+          <circle cx="14" cy="66" r="4"/><circle cx="244" cy="85" r="4"/>
+          <text x="10" y="92">v_in</text><text x="214" y="112">v_out</text>
+        </svg>
+        <span class="idx">Track 01</span>
+        <h3>Analog</h3>
+        <p>Schematic capture, device sizing, simulation, and layout. The path from a single transistor to a working analog block.</p>
+        <span class="go">Open the analog tutorials <span aria-hidden="true">↗</span></span>
+      </a>
+      <a class="track reveal" data-d="1" href="https://asic-network.github.io/digital-tutorials/" target="_blank" rel="noopener">
+        <!-- a NAND gate feeding a flip-flop, with its clock -->
+        <svg class="track-art" viewBox="0 0 260 170" aria-hidden="true">
+          <path d="M44 30v60h26a30 30 0 0 0 0-60z"/>
+          <circle cx="105" cy="60" r="5"/>
+          <path d="M8 44h36M8 76h36M110 60h40"/>
+          <rect x="150" y="34" width="62" height="78" rx="4"/>
+          <path d="M150 96l9 7-9 7"/>
+          <path d="M212 52h40"/>
+          <text x="158" y="58">D</text><text x="194" y="58">Q</text>
+          <path d="M120 104h30"/>
+          <path d="M8 150h18v-18h18v18h18v-18h18v18h18v-18h18v18h18v-18h18v18h18v-18h18v18h18"/>
+          <circle class="fill" cx="120" cy="104" r="3"/><path d="M120 104v28"/>
+          <circle cx="8" cy="44" r="4"/><circle cx="8" cy="76" r="4"/><circle cx="252" cy="52" r="4"/>
+        </svg>
+        <span class="idx">Track 02</span>
+        <h3>Digital</h3>
+        <p>RTL, synthesis, place and route, and signoff. The path from Verilog you have written to a layout you can hand off.</p>
+        <span class="go">Open the digital tutorials <span aria-hidden="true">↗</span></span>
+      </a>
     </div>
   </div>
 </section>
@@ -219,14 +272,14 @@
 <section class="sec theme-light" id="sponsors" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal">Sponsors</p>
+      <p class="tag reveal"><span class="ix">04</span>Sponsors</p>
       <h2 class="h2 reveal">Support student <span class="nowrap">chip design.</span></h2>
       <p class="lead reveal" data-d="1">The ASIC Network connects active student hardware clubs across North America, Europe, and Asia. Every new chapter we onboard naturally extends the reach of our existing partners. We keep the partner list small and deliberate: the trust of our member clubs is our most important asset, so we are highly selective about who we work with.</p>
     </div>
 
     <div class="tiers">
       <article class="tier reveal">
-        <span class="idx"><span>Talent partner</span><span>/01</span></span>
+        <span class="idx"><b>Talent partner</b><span>01</span></span>
         <h3>Recruiting pipeline</h3>
         <p>Students in the ASIC Network do real chip design, not coursework. When you post roles through the network, chapter leads surface candidates they know personally and would vouch for. You get a curated shortlist instead of a resume drop. Students get interviews with companies that actually understand hardware hiring.</p>
         <dl class="give-get">
@@ -235,7 +288,7 @@
         </dl>
       </article>
       <article class="tier reveal" data-d="1">
-        <span class="idx"><span>Tooling partner</span><span>/02</span></span>
+        <span class="idx"><b>Tooling partner</b><span>02</span></span>
         <h3>Ecosystem reach</h3>
         <p>The biggest gap between school and industry is professional tool fluency. Tooling partners support workshops and standardized flows so students train on real EDA environments. They graduate ready to contribute in your stack from day one.</p>
         <dl class="give-get">
@@ -244,7 +297,7 @@
         </dl>
       </article>
       <article class="tier reveal" data-d="2">
-        <span class="idx"><span>Silicon partner</span><span>/03</span></span>
+        <span class="idx"><b>Silicon partner</b><span>03</span></span>
         <h3>Tape-out support</h3>
         <p>Most student designs never leave a simulator. Silicon partners make the best projects real by funding tape-outs. Every chip is openly documented: PDK used, what worked, what did not. Transparent, student-generated evidence of your platform's real-world performance.</p>
         <dl class="give-get">
@@ -254,13 +307,13 @@
       </article>
     </div>
 
-    <div class="pitch reveal">
+    <div class="pitch theme-dark reveal" data-nav="dark">
       <div>
         <h3>Partner early.</h3>
         <p>We are actively expanding with some of the strongest student hardware communities globally. Partnering early means your reach grows into every new chapter we onboard, automatically and with no contracts to revisit. If your company is serious about working with the next generation of hardware talent, we would like to talk.</p>
       </div>
-      <a class="btn btn-solid" href="mailto:theasicnetwork@gmail.com">Get in touch
-        <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></a>
+      <a class="btn btn-primary" href="mailto:theasicnetwork@gmail.com">Get in touch
+        <i class="btn-ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></i></a>
     </div>
   </div>
 </section>
@@ -269,7 +322,7 @@
 <section class="sec theme-paper" id="join" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal">Register</p>
+      <p class="tag reveal"><span class="ix">05</span>Register</p>
       <h2 class="h2 reveal">Register your club.</h2>
       <p class="lead reveal" data-d="1">Got an ASIC or VLSI club at your university? Fill out the form and we'll get you plugged into the network.</p>
     </div>
@@ -285,23 +338,29 @@
       </div>
       <aside class="reg-side reveal" data-d="1">
         <h3 class="side-h">How it works</h3>
-        <ol class="join-list">
-          <li><span class="idx">01</span><span>Fill in your <b>university</b>, <b>club</b>, and a contact.</span></li>
-          <li><span class="idx">02</span><span>We get your registration and review it.</span></li>
-          <li><span class="idx">03</span><span>You get a <b>Discord invite</b> and your club joins the network.</span></li>
-          <li><span class="idx">04</span><span>Start sharing <b>docs</b> and <b>biweekly updates</b>.</span></li>
+        <ol class="steps">
+          <li><span class="step-n">01</span><p>Fill in your <b>university</b>, <b>club</b>, and a contact.</p></li>
+          <li><span class="step-n">02</span><p>We get your registration and review it.</p></li>
+          <li><span class="step-n">03</span><p>You get a <b>Discord invite</b> and your club joins the network.</p></li>
+          <li><span class="step-n">04</span><p>Start sharing <b>docs</b> and <b>biweekly updates</b>.</p></li>
         </ol>
-        <a class="btn btn-line" data-link="github" href="https://github.com/ASIC-Network" target="_blank" rel="noopener">View the repos on GitHub
-          <svg class="ne" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11L11 3M5 3h6v6" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></a>
+        <a class="btn btn-ghost ne" data-link="github" href="https://github.com/ASIC-Network" target="_blank" rel="noopener">View the repos on GitHub
+          <i class="btn-ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11L11 3M5 3h6v6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></i></a>
         <p class="fine">Joining the Discord is what plugs your club in. That's where new clubs are tracked and onboarded.</p>
       </aside>
     </div>
 
-    <div class="ctas">
-      <a class="cta-block cta-dark reveal" data-link="github" href="https://github.com/ASIC-Network" target="_blank" rel="noopener">Build with us
-        <svg viewBox="0 0 56 56" aria-hidden="true"><path d="M4 28h46M32 10l18 18-18 18" stroke="currentColor" stroke-width="2.5" fill="none"/></svg></a>
-      <a class="cta-block cta-grey reveal" data-d="1" href="mailto:theasicnetwork@gmail.com">Get in touch
-        <svg viewBox="0 0 56 56" aria-hidden="true"><path d="M4 28h46M32 10l18 18-18 18" stroke="currentColor" stroke-width="2.5" fill="none"/></svg></a>
+    <div class="launch theme-dark reveal" data-nav="dark">
+      <div>
+        <h2>Bring your club <em>online.</em></h2>
+        <p>Questions about joining or sponsoring? Email us, or come build with us on GitHub.</p>
+      </div>
+      <div class="launch-cta">
+        <a class="btn btn-primary" href="mailto:theasicnetwork@gmail.com">Email us
+          <i class="btn-ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></i></a>
+        <a class="btn btn-ghost ne" data-link="github" href="https://github.com/ASIC-Network" target="_blank" rel="noopener">GitHub
+          <i class="btn-ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11L11 3M5 3h6v6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></i></a>
+      </div>
     </div>
   </div>
 </section>
@@ -342,7 +401,7 @@
         </div>
       </div>
     </div>
-    <div class="wordmark" id="wordmark" aria-hidden="true"><span>ASIC Network</span></div>
+    <div class="wordmark" id="wordmark" aria-hidden="true"><span>ASIC NETWORK</span></div>
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> The ASIC Network · Founded by <a href="https://raghuavy.github.io/">Avyukt Raghuvanshi</a> · Founding chapter: <a href="https://stone-arch-silicon.github.io/stone-arch-silicon/">Stone Arch Silicon</a></span>
       <span>Silicon is a team sport.</span>
@@ -1185,11 +1244,9 @@ async function buildMesh(people){
       + "<b>" + continentSet.size + "</b> " + (continentSet.size === 1 ? "continent" : "continents")
       + " (" + prog.length + " more in progress)";
   }
-  const heroUnis = document.getElementById("statUnis"), heroWhere = document.getElementById("statWhere");
-  if (heroUnis && joined.length){
-    heroUnis.textContent = joined.length + (joined.length === 1 ? " university" : " universities");
-    heroWhere.textContent = countrySet.size + (countrySet.size === 1 ? " country" : " countries") + ", "
-      + continentSet.size + (continentSet.size === 1 ? " continent" : " continents");
+  // the live numbers in the hero (assets/site.js counts them up)
+  if (window.ASICNet && ASICNet.setStats){
+    ASICNet.setStats({ joined: joined.length, countries: countrySet.size, continents: continentSet.size, progress: prog.length });
   }
 }
 
