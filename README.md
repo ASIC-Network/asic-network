@@ -1,33 +1,30 @@
 # The ASIC Network - site
 
-Single-file static site (`index.html`). No build step, no backend, only Google Fonts (loaded over HTTPS). Drops straight into GitHub Pages.
+The website at [asicnetwork.net](https://asicnetwork.net/). Plain HTML, CSS, and JavaScript with no build step: GitHub Pages serves the files as they are, from the root of `main`.
 
-## Deploy (GitHub Pages)
+The design matches the [Stone Arch Silicon site](https://github.com/Stone-Arch-Silicon/stone-arch-silicon) (the founding chapter): black and white, big type, hairlines, and a full-screen video hero, with the network's blue as the one accent instead of SASi's gold. The hero film, fonts, and most of the stylesheet and script come from that repo.
 
-1. Push `index.html` to a repo (root, on `main`) under the **ASIC-Network** org.
-2. Repo -> **Settings -> Pages**.
-3. **Source: Deploy from a branch** -> Branch `main` -> `/ (root)` -> Save.
-4. Live at `https://asic-network.github.io/<repo>/` in ~1 min.
+## Files
 
-For an org landing page, name the repo `ASIC-Network.github.io` -> serves at `https://asic-network.github.io/`.
+| Path | Purpose |
+| --- | --- |
+| `index.html` | The whole page, plus the network map script and its `CONFIG` block at the bottom |
+| `assets/site.css` | All styles. Colours are variables at the top; each section picks a dark, light, or paper theme |
+| `assets/site.js` | Header, full-screen menu, scroll effects, rolling headline, and the motion toggle |
+| `assets/hero-*.mp4`, `assets/hero-720.webm`, `assets/hero-poster*.jpg` | The hero film (1080p, a portrait cut for phones, a VP9 fallback) and its first-frame posters |
+| `assets/Geist*.woff2`, `assets/Geist-OFL.txt` | Self-hosted Geist and Geist Mono (SIL OFL 1.1) |
+| `assets/logo-256.png` | The logo with a transparent background, for the header, footer, and favicon |
+| `logo.png`, `banner.png` | Full-size logo and banner, used for link previews and search results |
+| `world.geojson` | Country outlines for the map |
+| `CNAME`, `robots.txt`, `sitemap.xml` | Custom domain and search engine files |
 
 ## Edit points
 
-All in `index.html`, in the `CONFIG` block near the top of `<script>`:
-
-- **`discord`** -> paste your real invite link. **This is the one thing you must set** - the "Join the Discord" button points at a placeholder until you do.
-- **`github`** -> already set to `https://github.com/ASIC-Network`.
-- **`taglines`** -> the rotating typewriter line in the hero.
-- **`decorNodes`** -> node count for the animated graph (purely cosmetic, no real meaning).
-
-## Registration form
-
-Client-side only - there is no server. On submit it:
-- validates the required fields,
-- generates a node ID + confirmation card from the inputs,
-- reveals the Discord invite.
-
-Details stay in the user's browser; joining the Discord is the actual onboarding step. If you later want registrations recorded somewhere, swap the form's submit handler to post to a Google Form, a Formspree endpoint, or a prefilled GitHub issue - all work on a static Pages site.
+- **Universities on the map, and the counts in the hero:** edit the *Universities* tab of the ASIC Network Website Data Google Sheet (columns `university`, `label`, `status`, `lat`, `lng`). A status containing "joined", "connect", "complet", or "contact" draws a filled node; anything else draws a hollow, in-progress node. The page reads the sheet each time it loads, so no commit is needed.
+- **People in the map tooltips:** the sheet's people tab, the second sheet URL in `CONFIG` (`name`, `university`, `description`). University names must match the Universities tab exactly.
+- **Links:** `CONFIG` near the bottom of `index.html` holds the GitHub org, the Discord invite, and the two published sheet URLs.
+- **Registration form:** the Google Form is embedded in the Register section. To swap forms, replace the form ID in the iframe `src` (keep `?embedded=true`) and adjust `.form-card iframe` height in `assets/site.css` if the new form is longer or shorter.
+- **Rolling headline:** the words are the `<span>`s inside `#roller` in the hero. The last one must repeat the first so the loop is seamless.
 
 ## Preview locally
 
@@ -35,4 +32,4 @@ Details stay in the user's browser; joining the Discord is the actual onboarding
 python3 -m http.server 8000   # open http://localhost:8000
 ```
 
-Respects `prefers-reduced-motion` (boot sequence, scanlines, and animations turn off for users who set it).
+Respects `prefers-reduced-motion`: the video is never downloaded and the headline stops rolling. The "Pause motion" button in the hero does the same and remembers the choice.
