@@ -25,50 +25,53 @@
   const yearEl = $('#year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---------- motion: OS setting by default, the hero toggle overrides ----------
-     The choice is saved, so a paused page stays paused on the next visit. */
-  const MOTION_KEY = 'asicnet-motion';
+  /* Motion follows the device accessibility preference. */
   const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
-  const saved = readPref(MOTION_KEY);
   const listeners = [];
-  const motionBtn = $('#motionBtn'), motionLabel = $('#motionLabel');
   const Motion = {
-    on: saved ? saved === 'on' : !reduceMQ.matches,
-    set(v, persist){
+    on: !reduceMQ.matches,
+    set(v){
       this.on = v;
       root.classList.toggle('motion-off', !v);
-      if (motionBtn) motionBtn.setAttribute('aria-pressed', String(!v));
-      if (motionLabel) motionLabel.textContent = v ? 'Pause motion' : 'Play motion';
-      if (persist) writePref(MOTION_KEY, v ? 'on' : 'off');
       listeners.forEach(fn => fn(v));
     },
     subscribe(fn){ listeners.push(fn); }
   };
   window.ASICNet.Motion = Motion;
-  if (motionBtn) motionBtn.addEventListener('click', () => Motion.set(!Motion.on, true));
+  reduceMQ.addEventListener('change', e => Motion.set(!e.matches));
 
-  /* ---------- hero film ---------- */
+  /* Start muted inline playback immediately; retry after a mobile gesture. */
   const video = $('#heroVideo');
+  let heroVisible = true;
   function syncVideo(on){
     if (!video) return;
-    if (on){
-      if (video.preload !== 'auto') video.preload = 'auto';
-      const p = video.play();
-      if (p && p.catch) p.catch(() => {});   // low-power mode etc.: the poster stays up
-    } else {
-      video.pause();
-    }
+    if (on && heroVisible && !document.hidden){
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+      const playback = video.play();
+      if (playback && playback.catch) playback.catch(() => {});
+    } else video.pause();
   }
   if (video){
     video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
     video.addEventListener('playing', () => video.classList.add('is-playing'));
-    // stop decoding while the hero is off screen
-    new IntersectionObserver(([e]) => {
-      if (!Motion.on) return;
-      if (e.isIntersecting) syncVideo(true); else video.pause();
+    new IntersectionObserver(([entry]) => {
+      heroVisible = entry.isIntersecting;
+      syncVideo(Motion.on);
     }, { threshold: 0 }).observe(video);
     Motion.subscribe(syncVideo);
-    document.addEventListener('visibilitychange', () => { if (!document.hidden && Motion.on) syncVideo(true); });
+    const retryPlayback = () => { if (video.paused) syncVideo(Motion.on); };
+    video.addEventListener('loadeddata', retryPlayback);
+    video.addEventListener('canplay', retryPlayback);
+    document.addEventListener('touchend', retryPlayback, { passive: true });
+    document.addEventListener('pointerup', retryPlayback, { passive: true });
+    document.addEventListener('keydown', retryPlayback);
+    document.addEventListener('visibilitychange', () => syncVideo(Motion.on));
+    window.addEventListener('pageshow', retryPlayback);
   }
 
   /* ---------- decoding word in the headline ----------
