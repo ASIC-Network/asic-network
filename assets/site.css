@@ -80,7 +80,7 @@ ul,ol{margin:0;padding:0;list-style:none;}
 /* =====================================================================
    Header: a floating capsule that takes the colours of the section under it
    ===================================================================== */
-.progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:80;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--accent),var(--accent-hi));pointer-events:none;}
+.progress{display:none;}
 .site-header{position:fixed;top:14px;left:0;right:0;z-index:60;padding:0 var(--gut);color:#fff;pointer-events:none;}
 .nav{pointer-events:auto;max-width:var(--maxw);height:var(--nav-h);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:0 9px 0 14px;border:1px solid rgba(122,167,255,.12);border-radius:999px;transition:background-color .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);}
 .nav.on-dark{background:rgba(10,15,26,.7);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-color:rgba(122,167,255,.16);box-shadow:0 18px 40px -24px rgba(0,0,0,.85);}
