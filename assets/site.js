@@ -1,8 +1,15 @@
+/* Preserve links to the former one-page sections. */
+(function(){
+ const routes={about:"about.html",network:"network.html",tutorials:"tutorials.html",sponsors:"sponsors.html",join:"register.html"};
+ const file=location.pathname.split("/").pop();
+ const target=routes[location.hash.slice(1)];
+ if((!file||file==="index.html")&&target) location.replace(target);
+})();
 /* =====================================================================
    Page UI: year, header, menu, progress, reveal, motion preference, the
    decoding headline, and the live numbers in the hero. Started from the
    Stone Arch Silicon site's script. Each feature checks that its elements
-   exist before it runs. The network map lives in index.html.
+   exist before it runs. The network map lives in network.html.
    ===================================================================== */
 (function(){
   'use strict';
