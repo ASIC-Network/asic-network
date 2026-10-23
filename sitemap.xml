@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://asicnetwork.net/</loc>
-    <lastmod>2026-10-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://asicnetwork.net/</loc><lastmod>2026-10-23</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://asicnetwork.net/about.html</loc><lastmod>2026-10-23</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://asicnetwork.net/network.html</loc><lastmod>2026-10-23</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://asicnetwork.net/tutorials.html</loc><lastmod>2026-10-23</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://asicnetwork.net/sponsors.html</loc><lastmod>2026-10-23</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://asicnetwork.net/register.html</loc><lastmod>2026-10-23</lastmod><changefreq>weekly</changefreq></url>
 </urlset>
